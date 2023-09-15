@@ -1,8 +1,9 @@
 package com.michaelaskew.avocadotimer.models;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Avocado {
-    private String id;
+public class Avocado implements Serializable {
+    private int id;
     private String name;
     private String imagePath;
     private LocalDateTime creationTime;
@@ -22,5 +23,21 @@ public class Avocado {
 
     public void setCreationTime(LocalDateTime creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

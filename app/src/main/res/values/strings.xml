@@ -4,4 +4,8 @@
     <string name="enter_avocado_name">Enter avocado name</string>
     <string name="creation_time">Creation Time: </string>
     <string name="timer_value">Time Remaining: </string>
+    <string name="avocado_thumbnail">Avocado Thumbnail</string>
+    <string name="avocado_name_placeholder">Avocado Name</string>
+    <string name="creation_date_placeholder">Creation Date: 2023-09-15</string>
+
 </resources>

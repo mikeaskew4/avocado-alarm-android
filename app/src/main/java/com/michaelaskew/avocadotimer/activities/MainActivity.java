@@ -15,8 +15,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.michaelaskew.avocadotimer.R;
+import com.michaelaskew.avocadotimer.adapters.AvocadoAdapter;
+import com.michaelaskew.avocadotimer.database.DatabaseHelper;
 import com.michaelaskew.avocadotimer.models.Avocado;
 import com.michaelaskew.avocadotimer.utilities.ImageCaptureManager;
 import java.util.ArrayList;
@@ -47,7 +50,26 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
         btnCaptureAvocado.setOnClickListener(this::avocadoUploadImageClick);
 
         // TODO: Set up RecyclerView with an adapter
+        RecyclerView rvAvocadoList = findViewById(R.id.rvAvocadoList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        rvAvocadoList.setLayoutManager(layoutManager);
 
+        loadAvocados();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadAvocados();  // Assuming this method loads avocados from the database and updates the RecyclerView
+    }
+
+    private void loadAvocados() {
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        List<Avocado> avocados = dbHelper.getAllAvocados(); // method to retrieve all avocados from the database
+        AvocadoAdapter adapter = new AvocadoAdapter(this, avocados);
+
+        rvAvocadoList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();  // Notify the adapter that the data has changed
     }
 
     @Override
@@ -154,11 +176,9 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 //        }
     }
 
-//    private void captureImage() {
-//        // TODO: Implement capture image functionality
-//    }
-
     private void chooseFromGallery() {
         // TODO: Implement choose from gallery functionality
     }
+
+
 }
