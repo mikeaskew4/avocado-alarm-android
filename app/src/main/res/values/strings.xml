@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AvacadoTimer</string>
+    <string name="app_name">AvocadoTimer</string>
     <string name="avocado_image">Avocado Image</string>
     <string name="enter_avocado_name">Enter avocado name</string>
     <string name="creation_time">Creation Time: </string>

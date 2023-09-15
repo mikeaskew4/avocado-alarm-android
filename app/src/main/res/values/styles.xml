@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Define colors for your app -->
+    <color name="colorPrimary">#4CAF50</color> <!-- Avocado green -->
+    <color name="colorPrimaryDark">#388E3C</color> <!-- Darker avocado green -->
+    <color name="colorAccent">#FFC107</color> <!-- Amber for accents, you can choose your color -->
+
+    <!-- More styles can be added here as required. For example, if you want custom styles for buttons, text views, etc. -->
+
+</resources>

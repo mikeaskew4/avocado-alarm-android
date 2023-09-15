@@ -2,7 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <!-- Add other permissions if needed, like for accessing external storage -->
@@ -27,8 +32,17 @@
         </activity>
 
         <activity android:name=".activities.AvocadoDetailActivity"></activity>
-        <receiver android:name=".receivers.AvocadoAlarmReceiver"/>
+        <receiver android:name=".recievers.AvocadoAlarmReceiver"/>
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.michaelaskew.avocadotimer.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <!-- Other components, services, receivers, etc. go here -->
     </application>
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Define the gradient background -->
+    <item>
+        <shape
+            android:shape="rectangle">
+            <gradient
+                android:startColor="#4CAF50"
+                android:endColor="#388E3C"
+                android:angle="270" />
+        </shape>
+    </item>
+
+    <!-- Centered logo on the gradient background -->
+<!--    <item>-->
+<!--        <bitmap-->
+<!--            android:src="@drawable/logo"    &lt;!&ndash; Assuming you have a logo.png in your drawable folder &ndash;&gt;-->
+<!--        android:gravity="center" />-->
+<!--    </item>-->
+
+</layer-list>
