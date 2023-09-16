@@ -2,6 +2,7 @@ package com.michaelaskew.avocadotimer.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -25,17 +26,23 @@ import com.michaelaskew.avocadotimer.utilities.ImageCaptureManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ImageCaptureManager.ImageCaptureListener {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class MainActivity extends AppCompatActivity implements ImageCaptureManager.ImageCaptureListener,  EasyPermissions.PermissionCallbacks  {
 
     ImageCaptureManager imageCaptureManager;
+
+    private static final int RC_PERMISSIONS = 123;
+    private static final int RC_CAMERA_PERM = 124;  // Specifically for requesting camera permission in `avocadoUploadImageClick` method
+
+    private static final String PREFS_NAME = "AppPrefs";
+    private static final String KEY_LAUNCH_COUNT = "launch_count";
 
     private Button btnCaptureAvocado;
     private RecyclerView rvAvocadoList;
     private List<Avocado> avocadoList = new ArrayList<>();
-
-
-    private static final int REQUEST_CAMERA_PERMISSION = 1;
-    private static final int REQUEST_GALLERY_PERMISSION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,49 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
         rvAvocadoList.setLayoutManager(layoutManager);
 
         loadAvocados();
+    }
+
+    @AfterPermissionGranted(RC_PERMISSIONS)
+    private void requestPermissions() {
+        String[] perms = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                // Manifest.permission.POST_NOTIFICATIONS
+        };  // Add the permissions you need
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "We need these permissions for the app to function properly.",
+                    RC_PERMISSIONS, perms);
+        }
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    // Optional: if you want a callback after permissions are granted or denied
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        // Some permissions have been granted
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        // Some permissions have been denied
+        // If some permissions are permanently denied then inform the user
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        }
     }
 
     @Override
@@ -95,85 +145,32 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
         imageCaptureManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private boolean hasCameraPermission() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private boolean hasReadExternalStoragePermission() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA},
-                REQUEST_CAMERA_PERMISSION);
-
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                REQUEST_GALLERY_PERMISSION);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-//                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-//
-//                // Both permissions were granted
-//                // Continue with the camera/gallery intent
-//            } else {
-//                Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-        // @@TODO Grant Gallery permissions wil require reworking this...
-        switch (requestCode) {
-            case REQUEST_CAMERA_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Camera permission granted
-                } else {
-                    // Camera permission denied
-                }
-                break;
-            case REQUEST_GALLERY_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Gallery permission granted
-                } else {
-                    // Gallery permission denied
-                }
-                break;
-        }
-    }
-
-
     public void avocadoUploadImageClick(View v) {
-//        if (!hasCameraPermission() || !hasReadExternalStoragePermission()) {
-////            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-////                if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
-////                        || !shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-////                    // User has checked "Don't ask again"
-////                    // Show a dialog/message directing the user to app settings to enable the permission
-////                } else {
-////                    requestPermissions();
-////                }
-////            }
-//            requestPermissions();
-//
-//        } else {
-            String[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Add a new Avocado");
-            builder.setItems(options, (dialog, which) -> {
-                if (options[which].equals("Take Photo")) {
-                    imageCaptureManager.captureImage();
-                } else if (options[which].equals("Choose from Gallery")) {
-                    chooseFromGallery();
-                } else if (options[which].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            });
-            builder.show();
-//        }
+        String[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add a new Avocado");
+        builder.setItems(options, (dialog, which) -> {
+            if (options[which].equals("Take Photo")) {
+                checkCameraPermissionAndCapture();
+            } else if (options[which].equals("Choose from Gallery")) {
+                chooseFromGallery();
+            } else if (options[which].equals("Cancel")) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    @AfterPermissionGranted(RC_CAMERA_PERM)
+    private void checkCameraPermissionAndCapture() {
+        String[] perms = {Manifest.permission.CAMERA};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            imageCaptureManager.captureImage();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "We need camera permission to take photos.",
+                    RC_CAMERA_PERM, perms);
+        }
     }
 
     private void chooseFromGallery() {

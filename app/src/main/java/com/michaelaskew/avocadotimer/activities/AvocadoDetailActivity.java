@@ -29,6 +29,7 @@ import com.michaelaskew.avocadotimer.recievers.AvocadoAlarmReceiver;
 import com.michaelaskew.avocadotimer.utilities.TimeUtils;
 
 public class AvocadoDetailActivity extends AppCompatActivity {
+    private static final int RC_NOTIFICATIONS_PERM = 112;
 
     private ImageView imgAvocado;
     private EditText edtAvocadoName;
