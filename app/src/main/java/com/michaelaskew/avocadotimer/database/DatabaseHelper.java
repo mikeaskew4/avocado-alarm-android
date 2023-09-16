@@ -1,5 +1,6 @@
 package com.michaelaskew.avocadotimer.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -35,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_IMAGE_URI + " TEXT,"
-                + COLUMN_CREATION_TIME + " TEXT" + ")";
+                + COLUMN_CREATION_TIME + " TEXT DEFAULT (datetime('now', 'localtime'))" + ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -45,9 +46,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    @SuppressLint("Range")
     public List<Avocado> getAllAvocados() {
         List<Avocado> avocadoList = new ArrayList<>();
-
         // Select all query
         String selectQuery = "SELECT  * FROM " + TABLE_NAME;
 
@@ -61,8 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 avocado.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
                 avocado.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
                 avocado.setImagePath(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_URI)));
-
-//                avocado.setCreationTime(cursor.getString(cursor.getColumnIndex(COLUMN_CREATION_TIME)));
+                avocado.setCreationTime(cursor.getString(cursor.getColumnIndex(COLUMN_CREATION_TIME)));
                 // Add other fields as necessary...
 
                 // Adding avocado to list
@@ -78,10 +78,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return avocadoList;
     }
 
+    @SuppressLint("Range")
     public Avocado getAvocado(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_NAME, new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_IMAGE_URI}, COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, new String[]{
+                COLUMN_ID,
+                COLUMN_NAME,
+                COLUMN_IMAGE_URI,
+                COLUMN_CREATION_TIME,
+                // others...
+            }, COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -89,6 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             avocado.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
             avocado.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
             avocado.setImagePath(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_URI)));
+            avocado.setCreationTime(cursor.getString(cursor.getColumnIndex(COLUMN_CREATION_TIME)));
             // ... (set other attributes)
 
             cursor.close();
@@ -104,7 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, avocado.getName());
         values.put(COLUMN_IMAGE_URI, avocado.getImagePath());
-        values.put(COLUMN_CREATION_TIME, String.valueOf(avocado.getCreationTime()));
+        // values.put(COLUMN_CREATION_TIME, String.valueOf(avocado.getCreationTime()));
         // ... other fields ...
 
         // Inserting Row

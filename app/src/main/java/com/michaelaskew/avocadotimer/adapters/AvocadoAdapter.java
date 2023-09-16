@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,12 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.michaelaskew.avocadotimer.R;
 import com.michaelaskew.avocadotimer.activities.AvocadoDetailActivity;
 import com.michaelaskew.avocadotimer.models.Avocado;
+import com.michaelaskew.avocadotimer.utilities.TimeUtils;
+import com.michaelaskew.avocadotimer.views.CircleChartView;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoViewHolder> {
-
     private List<Avocado> avocadoList;
     private Context context;
 
@@ -38,14 +40,16 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
     @Override
     public void onBindViewHolder(@NonNull AvocadoViewHolder holder, int position) {
         Avocado avocado = avocadoList.get(position);
-        holder.tvName.setText(avocado.getName());
-        if (avocado.getCreationTime() != null) {
-//            holder.tvCreatedAt.setText(avocado.getCreationTime());
-            // Formatting creation time for display
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM HH:mm:ss");
-//            String formattedDateTimeString = avocado.getCreationTime().format(formatter);
-//            holder.tvCreatedAt.setText(formattedDateTimeString);
-        }
+
+        boolean nameIsSet = !avocado.getName().isEmpty();
+        holder.tvName.setText(nameIsSet ? avocado.getName() : "[No Name]");
+        String creationTime = avocado.getCreationTime();
+        holder.tvCreatedAt.setText(TimeUtils.getRelativeTimeText(creationTime));
+
+        double fractionElapsed = (double) TimeUtils.getTimeRemaining(creationTime, 360)[1]; // Assuming this method returns the correct value
+        holder.circleChartView.setFractionElapsed(fractionElapsed);  // Set the fraction elapsed to the CircleChartView of the current item
+
+        // ... (set other attributes of avocado)
         // ... (set other attributes of avocado)
     }
 
@@ -58,6 +62,7 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
 
         TextView tvName;
         TextView tvCreatedAt;
+        CircleChartView circleChartView;
         // ... (other views)
 
         public AvocadoViewHolder(@NonNull View itemView) {
@@ -65,7 +70,7 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
             itemView.setOnClickListener(this);
             tvName = itemView.findViewById(R.id.avocado_name);
             tvCreatedAt = itemView.findViewById(R.id.avocado_creation_date);
-
+            circleChartView = itemView.findViewById(R.id.circleChartView); // Initialize the CircleChartView
             // ... (initialize other views)
         }
 

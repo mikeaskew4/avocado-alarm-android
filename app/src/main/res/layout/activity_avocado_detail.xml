@@ -27,13 +27,13 @@
             android:id="@+id/tvCreationTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/creation_time" />
+             />
 
         <TextView
             android:id="@+id/tvTimer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/timer_value" />
+             />
 
         <Button
             android:id="@+id/btnSave"

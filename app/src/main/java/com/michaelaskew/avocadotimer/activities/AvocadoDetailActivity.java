@@ -26,6 +26,7 @@ import com.michaelaskew.avocadotimer.R;
 import com.michaelaskew.avocadotimer.database.DatabaseHelper;
 import com.michaelaskew.avocadotimer.models.Avocado;
 import com.michaelaskew.avocadotimer.recievers.AvocadoAlarmReceiver;
+import com.michaelaskew.avocadotimer.utilities.TimeUtils;
 
 public class AvocadoDetailActivity extends AppCompatActivity {
 
@@ -58,27 +59,14 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             edtAvocadoName.setText(selectedAvocado.getName());
 
             // Formatting creation time for display
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//            String formattedDateTimeString = selectedAvocado.getCreationTime().format(formatter);
-//            tvCreationTime.setText(getString(R.string.creation_time) +  selectedAvocado.getCreationTime());
+            String creationTime = selectedAvocado.getCreationTime();
+            tvCreationTime.setText(getString(R.string.creation_time) + TimeUtils.getRelativeTimeText(creationTime));
 
-//
-//            LocalDateTime creationTime = selectedAvocado.getCreationTime();
-//            LocalDateTime targetTime = creationTime.plusMinutes(360);
-//            LocalDateTime now = LocalDateTime.now();
-//
-//            Duration timeRemaining = Duration.between(now, targetTime);
-//
-//            long hours = timeRemaining.toHours();
-//            long minutes = timeRemaining.minusHours(hours).toMinutes();
-//            long seconds = timeRemaining.minusHours(hours).minusMinutes(minutes).toSeconds();
-//
-//            if (timeRemaining.isNegative() || timeRemaining.isZero()) {
-//                tvTimer.setText("Avocado is ready!");
-//            } else {
-//                tvTimer.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds));
-//            }
+            Object[] results = TimeUtils.getTimeRemaining(creationTime, 360);
+            String formattedTime = (String) results[0];
+            double fractionElapsed = (double) results[1];
 
+            tvTimer.setText(getString(R.string.timer_value) + formattedTime);
 
         } else {
             String imageUriString = getIntent().getStringExtra("capturedImageUri");
@@ -92,7 +80,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
                 avocado.setImagePath(capturedImageUri.toString());
                 // If creationTime hasn't been set yet, set it to the current time
                 if (avocado.getCreationTime() == null) {
-                    avocado.setCreationTime(LocalDateTime.now());
+                    avocado.setCreationTime(LocalDateTime.now().toString());
                 }
 
                 // TODO: Load image into imgAvocado using Glide or Picasso

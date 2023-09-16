@@ -6,7 +6,7 @@ public class Avocado implements Serializable {
     private int id;
     private String name;
     private String imagePath;
-    private LocalDateTime creationTime;
+    private String creationTime;
 
     // Constructors, getters, and setters...
     public String getName() {
@@ -17,11 +17,11 @@ public class Avocado implements Serializable {
         this.name = name;
     }
 
-    public LocalDateTime getCreationTime() {
+    public String getCreationTime() {
         return creationTime;
     }
 
-    public void setCreationTime(LocalDateTime creationTime) {
+    public void setCreationTime(String creationTime) {
         this.creationTime = creationTime;
     }
 
