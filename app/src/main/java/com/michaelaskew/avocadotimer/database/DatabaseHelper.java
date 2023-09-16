@@ -61,6 +61,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 avocado.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
                 avocado.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
                 avocado.setImagePath(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_URI)));
+
+//                avocado.setCreationTime(cursor.getString(cursor.getColumnIndex(COLUMN_CREATION_TIME)));
                 // Add other fields as necessary...
 
                 // Adding avocado to list
@@ -102,6 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, avocado.getName());
         values.put(COLUMN_IMAGE_URI, avocado.getImagePath());
+        values.put(COLUMN_CREATION_TIME, String.valueOf(avocado.getCreationTime()));
         // ... other fields ...
 
         // Inserting Row

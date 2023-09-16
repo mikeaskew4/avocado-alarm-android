@@ -15,9 +15,11 @@ import android.content.Context;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+import java.util.Locale;
 
 
 import com.michaelaskew.avocadotimer.R;
@@ -42,7 +44,6 @@ public class AvocadoDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avocado_detail);
 
-
         imgAvocado = findViewById(R.id.imgAvocado);
         edtAvocadoName = findViewById(R.id.edtAvocadoName);
         tvCreationTime = findViewById(R.id.tvCreationTime);
@@ -55,6 +56,30 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             Uri capturedImageUri = Uri.parse(selectedAvocado.getImagePath());
             imgAvocado.setImageURI(capturedImageUri);
             edtAvocadoName.setText(selectedAvocado.getName());
+
+            // Formatting creation time for display
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//            String formattedDateTimeString = selectedAvocado.getCreationTime().format(formatter);
+//            tvCreationTime.setText(getString(R.string.creation_time) +  selectedAvocado.getCreationTime());
+
+//
+//            LocalDateTime creationTime = selectedAvocado.getCreationTime();
+//            LocalDateTime targetTime = creationTime.plusMinutes(360);
+//            LocalDateTime now = LocalDateTime.now();
+//
+//            Duration timeRemaining = Duration.between(now, targetTime);
+//
+//            long hours = timeRemaining.toHours();
+//            long minutes = timeRemaining.minusHours(hours).toMinutes();
+//            long seconds = timeRemaining.minusHours(hours).minusMinutes(minutes).toSeconds();
+//
+//            if (timeRemaining.isNegative() || timeRemaining.isZero()) {
+//                tvTimer.setText("Avocado is ready!");
+//            } else {
+//                tvTimer.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds));
+//            }
+
+
         } else {
             String imageUriString = getIntent().getStringExtra("capturedImageUri");
             Uri capturedImageUri = Uri.parse(imageUriString);
@@ -72,11 +97,6 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
                 // TODO: Load image into imgAvocado using Glide or Picasso
                 edtAvocadoName.setText(avocado.getName());
-
-                // Formatting creation time for display
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                String formattedDateTime = avocado.getCreationTime().format(formatter);
-                tvCreationTime.setText(getString(R.string.creation_time) + formattedDateTime);
 
                 // TODO: Calculate and display time remaining until avocado is ready
             }
@@ -105,11 +125,15 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             Avocado avocado = new Avocado();
             avocado.setName(edtAvocadoName.getText().toString());
             avocado.setImagePath(imageUriString);
+            if (avocado.getCreationTime() == null) {
+//                avocado.setCreationTime(new String[]{LocalDateTime.now()});
+            }
             // ... set other fields ...
 
             long newId = db.insertAvocado(avocado);
             avocado.setId((int) newId); // Set the newly generated ID to your avocado object
             Toast.makeText(AvocadoDetailActivity.this, "Avocado added!", Toast.LENGTH_SHORT).show();
+            setAvocadoReadyAlarm(5000);
         } else {
             // Existing avocado, update it
             Avocado selectedAvocado = db.getAvocado(selectedAvocadoId);
@@ -133,7 +157,9 @@ public class AvocadoDetailActivity extends AppCompatActivity {
     private void setAvocadoReadyAlarm(long triggerTimeInMillis) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AvocadoAlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        Log.d("AvocadoDetailActivity", "Alarm is set.");
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTimeInMillis, pendingIntent);

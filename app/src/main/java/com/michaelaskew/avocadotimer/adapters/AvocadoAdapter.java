@@ -15,6 +15,7 @@ import com.michaelaskew.avocadotimer.R;
 import com.michaelaskew.avocadotimer.activities.AvocadoDetailActivity;
 import com.michaelaskew.avocadotimer.models.Avocado;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoViewHolder> {
@@ -38,6 +39,13 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
     public void onBindViewHolder(@NonNull AvocadoViewHolder holder, int position) {
         Avocado avocado = avocadoList.get(position);
         holder.tvName.setText(avocado.getName());
+        if (avocado.getCreationTime() != null) {
+//            holder.tvCreatedAt.setText(avocado.getCreationTime());
+            // Formatting creation time for display
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM HH:mm:ss");
+//            String formattedDateTimeString = avocado.getCreationTime().format(formatter);
+//            holder.tvCreatedAt.setText(formattedDateTimeString);
+        }
         // ... (set other attributes of avocado)
     }
 
@@ -49,12 +57,15 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
     public class AvocadoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvName;
+        TextView tvCreatedAt;
         // ... (other views)
 
         public AvocadoViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             tvName = itemView.findViewById(R.id.avocado_name);
+            tvCreatedAt = itemView.findViewById(R.id.avocado_creation_date);
+
             // ... (initialize other views)
         }
 
