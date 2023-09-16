@@ -25,7 +25,6 @@ public class Avocado implements Serializable {
         this.creationTime = creationTime;
     }
 
-
     public int getId() {
         return id;
     }
