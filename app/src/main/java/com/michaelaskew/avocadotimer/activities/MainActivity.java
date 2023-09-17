@@ -1,14 +1,17 @@
 package com.michaelaskew.avocadotimer.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.michaelaskew.avocadotimer.R;
@@ -23,8 +27,12 @@ import com.michaelaskew.avocadotimer.adapters.AvocadoAdapter;
 import com.michaelaskew.avocadotimer.database.DatabaseHelper;
 import com.michaelaskew.avocadotimer.models.Avocado;
 import com.michaelaskew.avocadotimer.utilities.ImageCaptureManager;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -34,6 +42,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements ImageCaptureManager.ImageCaptureListener,  EasyPermissions.PermissionCallbacks  {
 
     ImageCaptureManager imageCaptureManager;
+    private static final int PERMISSION_REQUEST_CODE = 100;
 
     private static final int RC_PERMISSIONS = 123;
     private static final int RC_CAMERA_PERM = 124;  // Specifically for requesting camera permission in `avocadoUploadImageClick` method
@@ -46,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 
     private Button btnCaptureAvocado;
     private RecyclerView rvAvocadoList;
+    private TextView mainHeadline;
+    private TextView subhead;
     private List<Avocado> avocadoList = new ArrayList<>();
 
     @Override
@@ -53,19 +64,123 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Check if the app is launched for the first time
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        boolean firstTime = prefs.getBoolean("firstTime", true);
+
+        if (firstTime) {
+            // If it's the first time, request permissions
+            requestNeededPermissions();
+
+            // Mark firstTime as false
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("firstTime", false);
+            editor.apply();
+        }
+
         imageCaptureManager = new ImageCaptureManager(this);
         imageCaptureManager.setListener(this);
 
+        mainHeadline = findViewById(R.id.headline);
+        subhead = findViewById(R.id.subhead);
         btnCaptureAvocado = findViewById(R.id.btnCaptureAvocado);
         rvAvocadoList = findViewById(R.id.rvAvocadoList);
         btnCaptureAvocado.setOnClickListener(this::avocadoUploadImageClick);
 
+
         // TODO: Set up RecyclerView with an adapter
-        RecyclerView rvAvocadoList = findViewById(R.id.rvAvocadoList);
+        rvAvocadoList = findViewById(R.id.rvAvocadoList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         rvAvocadoList.setLayoutManager(layoutManager);
 
         loadAvocados();
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+
+                if (position != RecyclerView.NO_POSITION && position < avocadoList.size()) {
+
+                    Avocado avocadoToDelete = avocadoList.get(position);
+
+                    DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this);
+                    if (dbHelper.deleteAvocado(avocadoToDelete.getId())) {
+                        avocadoList.remove(position);
+
+                        // Check if the list is empty after removing the item
+                        if (avocadoList.isEmpty()) {
+                            rvAvocadoList.getAdapter().notifyDataSetChanged();
+                        } else {
+                            rvAvocadoList.getAdapter().notifyItemRemoved(position);
+                        }
+
+                        Toast.makeText(MainActivity.this, "Avocado deleted!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Error deleting Avocado.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(rvAvocadoList);
+    }
+
+    private void loadAvocados() {
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        avocadoList = dbHelper.getAllAvocados(); // method to retrieve all avocados from the database
+        if(avocadoList.size() == 0) {
+            mainHeadline.setText("Add Some Avocados and Get Something to Look Forward To!");
+        } else if (avocadoList.size() > 0){
+            mainHeadline.setText("There's an avocado (or two) in your future..."); // Or whatever default text you want to display
+        }
+
+        // Parse the date strings and check if any are older than 5 days
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  // assuming your timestamp is in this format
+        Calendar fiveDaysAgo = Calendar.getInstance();
+        fiveDaysAgo.add(Calendar.DAY_OF_YEAR, -5);  // get the date for 5 days ago
+
+        boolean hasOldAvocados = false;
+        for (Avocado avocado : avocadoList) {
+            try {
+                Date avocadoDate = sdf.parse(avocado.getCreationTime());
+                if (avocadoDate.before(fiveDaysAgo.getTime())) {
+                    hasOldAvocados = true;
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (hasOldAvocados) {
+            mainHeadline.setText("Looks Like Your Avocado List Needs Some Grooming");
+            subhead.setText("Swipe on the list to remove an avocado you (obviosuly already ate");
+
+        }
+
+        AvocadoAdapter adapter = new AvocadoAdapter(this, avocadoList);
+
+        rvAvocadoList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();  // Notify the adapter that the data has changed
+    }
+
+    private void requestNeededPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String[] permissions = {
+                    Manifest.permission.CAMERA,
+                    "android.permission.POST_NOTIFICATIONS"  // This permission is hypothetical for the purpose of this answer
+            };
+
+            requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+        }
     }
 
     @AfterPermissionGranted(RC_PERMISSIONS)
@@ -126,16 +241,7 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
     @Override
     protected void onResume() {
         super.onResume();
-        loadAvocados();  // Assuming this method loads avocados from the database and updates the RecyclerView
-    }
-
-    private void loadAvocados() {
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        List<Avocado> avocados = dbHelper.getAllAvocados(); // method to retrieve all avocados from the database
-        AvocadoAdapter adapter = new AvocadoAdapter(this, avocados);
-
-        rvAvocadoList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();  // Notify the adapter that the data has changed
+        loadAvocados();
     }
 
     @Override
@@ -207,7 +313,20 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
     }
 
     private void chooseFromGallery() {
-        // TODO: Implement choose from gallery functionality
+        // @@TODO: Implement choose from gallery functionality
+        // Create an AlertDialog.Builder
+        AlertDialog.Builder comingSoonAlert = new AlertDialog.Builder(this);
+        comingSoonAlert.setTitle("Feature coming soon...");
+        comingSoonAlert.setMessage("We're still working on it!");
+        comingSoonAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        comingSoonAlert.show();
+
     }
 
 

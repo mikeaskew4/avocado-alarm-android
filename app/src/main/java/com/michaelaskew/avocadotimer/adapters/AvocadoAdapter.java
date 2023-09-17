@@ -39,6 +39,9 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
 
     @Override
     public void onBindViewHolder(@NonNull AvocadoViewHolder holder, int position) {
+        if (position < 0 || position >= avocadoList.size()) {
+            return;  // Safety check
+        }
         Avocado avocado = avocadoList.get(position);
 
         boolean nameIsSet = !avocado.getName().isEmpty();
@@ -55,7 +58,7 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
 
     @Override
     public int getItemCount() {
-        return avocadoList.size();
+        return (avocadoList != null) ? avocadoList.size() : 0;
     }
 
     public class AvocadoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -77,14 +80,15 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            Avocado clickedAvocado = avocadoList.get(position);
+            if (position != RecyclerView.NO_POSITION) {
+                Avocado clickedAvocado = avocadoList.get(position);
 
-            Intent intent = new Intent(context, AvocadoDetailActivity.class);
-            intent.putExtra("avocado_id", clickedAvocado.getId());
+                Intent intent = new Intent(context, AvocadoDetailActivity.class);
+                intent.putExtra("avocado_id", clickedAvocado.getId());
 
-            Log.d("AvocadoDetailActivity", "Avocado Adapter " + clickedAvocado.getId());
-            // You can pass other details if needed
-            context.startActivity(intent);
+                // You can pass other details if needed
+                context.startActivity(intent);
+            }
         }
     }
 }
