@@ -165,7 +165,9 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
     private void checkCameraPermissionAndCapture() {
         String[] perms = {Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this, perms)) {
-            imageCaptureManager.captureImage();
+//            imageCaptureManager.captureImage();
+            Intent cameraIntent = new Intent(this, CameraActivity.class);
+            startActivity(cameraIntent);
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, "We need camera permission to take photos.",
