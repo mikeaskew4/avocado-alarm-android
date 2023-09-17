@@ -43,6 +43,9 @@ public class AvocadoDetailActivity extends AppCompatActivity {
     private Button btnSave;
     private DatabaseHelper db;
 
+    private Button deleteButton;
+    private Avocado selectedAvocado;
+
     int selectedAvocadoId = -1;
 
     @Override
@@ -55,10 +58,12 @@ public class AvocadoDetailActivity extends AppCompatActivity {
         tvCreationTime = findViewById(R.id.tvCreationTime);
         tvTimer = findViewById(R.id.tvTimer);
 
+        deleteButton = findViewById(R.id.deleteButton);
+
         selectedAvocadoId = getIntent().getIntExtra("avocado_id", -1);
         if (selectedAvocadoId > 0) {
             DatabaseHelper db = new DatabaseHelper(this);
-            Avocado selectedAvocado = db.getAvocado(selectedAvocadoId);
+            selectedAvocado = db.getAvocado(selectedAvocadoId);
             Uri capturedImageUri = Uri.parse(selectedAvocado.getImagePath());
             imgAvocado.setImageURI(capturedImageUri);
             edtAvocadoName.setText(selectedAvocado.getName());
@@ -72,6 +77,13 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             double fractionElapsed = (double) results[1];
 
             tvTimer.setText(getString(R.string.timer_value) + formattedTime);
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteCurrentAvocado();
+                }
+            });
 
         } else {
             String imageUriString = getIntent().getStringExtra("capturedImageUri");
@@ -93,6 +105,8 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
                 // TODO: Calculate and display time remaining until avocado is ready
             }
+
+            deleteButton.setVisibility(View.GONE);
         }
         btnSave = findViewById(R.id.btnSave);
 
@@ -139,6 +153,15 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
         // Optional: You can finish the activity if you want to go back to the main screen after saving
          finish();
+    }
+
+    private void deleteCurrentAvocado() {
+        if (selectedAvocado != null && db.deleteAvocado(selectedAvocado.getId())) {
+            Toast.makeText(this, "Avocado deleted!", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this, "Error deleting Avocado.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @AfterPermissionGranted(RC_NOTIFICATIONS_PERM)

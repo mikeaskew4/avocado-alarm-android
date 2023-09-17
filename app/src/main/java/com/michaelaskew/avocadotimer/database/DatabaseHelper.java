@@ -133,4 +133,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_NAME, values, COLUMN_ID + " = ?", new String[]{String.valueOf(avocado.getId())});
     }
 
+    public boolean deleteAvocado(int avocadoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME, "ID = ?", new String[]{String.valueOf(avocadoId)}) > 0;
+    }
+
 }
