@@ -1,5 +1,6 @@
 package com.michaelaskew.avocadotimer.activities;
 
+import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,9 @@ import com.michaelaskew.avocadotimer.database.DatabaseHelper;
 import com.michaelaskew.avocadotimer.models.Avocado;
 import com.michaelaskew.avocadotimer.recievers.AvocadoAlarmReceiver;
 import com.michaelaskew.avocadotimer.utilities.TimeUtils;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class AvocadoDetailActivity extends AppCompatActivity {
     private static final int RC_NOTIFICATIONS_PERM = 112;
@@ -98,7 +102,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveAvocado();
+                checkNotificationsPermissionAndSaveAvocado();
             }
         });
 
@@ -135,6 +139,18 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
         // Optional: You can finish the activity if you want to go back to the main screen after saving
          finish();
+    }
+
+    @AfterPermissionGranted(RC_NOTIFICATIONS_PERM)
+    private void checkNotificationsPermissionAndSaveAvocado() {
+        String[] perms = {Manifest.permission.POST_NOTIFICATIONS};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            saveAvocado();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "We need notifications permission to let you know the timer is doner.",
+                    RC_NOTIFICATIONS_PERM, perms);
+        }
     }
 
     @Override

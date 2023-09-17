@@ -24,6 +24,7 @@ import com.michaelaskew.avocadotimer.database.DatabaseHelper;
 import com.michaelaskew.avocadotimer.models.Avocado;
 import com.michaelaskew.avocadotimer.utilities.ImageCaptureManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -37,7 +38,10 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
     private static final int RC_PERMISSIONS = 123;
     private static final int RC_CAMERA_PERM = 124;  // Specifically for requesting camera permission in `avocadoUploadImageClick` method
 
+    // Define a constant for SharedPreferences
     private static final String PREFS_NAME = "AppPrefs";
+    private static final String DENIED_COUNTER = "CameraPermissionDeniedCounter";
+
     private static final String KEY_LAUNCH_COUNT = "launch_count";
 
     private Button btnCaptureAvocado;
@@ -90,6 +94,12 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 
         // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+
+        if (requestCode == RC_CAMERA_PERM) {
+            if (EasyPermissions.somePermissionDenied(this, permissions)) {
+                onCameraPermissionDenied();
+            }
+        }
     }
 
     // Optional: if you want a callback after permissions are granted or denied
@@ -105,6 +115,12 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             new AppSettingsDialog.Builder(this).build().show();
         }
+    }
+
+    private void onCameraPermissionDenied() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int deniedCount = prefs.getInt(DENIED_COUNTER, 0);
+        prefs.edit().putInt(DENIED_COUNTER, deniedCount + 1).apply();
     }
 
     @Override
@@ -163,15 +179,30 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 
     @AfterPermissionGranted(RC_CAMERA_PERM)
     private void checkCameraPermissionAndCapture() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int deniedCount = prefs.getInt(DENIED_COUNTER, 0);
+
         String[] perms = {Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this, perms)) {
 //            imageCaptureManager.captureImage();
             Intent cameraIntent = new Intent(this, CameraActivity.class);
             startActivity(cameraIntent);
         } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, "We need camera permission to take photos.",
-                    RC_CAMERA_PERM, perms);
+            if (deniedCount > 0 && EasyPermissions.somePermissionPermanentlyDenied(this, Arrays.asList(perms))) {
+                // If permissions are permanently denied and have been denied at least once before
+                new AppSettingsDialog.Builder(this)
+                        .setTitle("Required Permissions")
+                        .setRationale("Camera permission is required for this feature. Please enable it in settings.")
+                        .setPositiveButton("Open Settings")
+                        .setNegativeButton("Cancel")
+                        .setRequestCode(RC_CAMERA_PERM)
+                        .build()
+                        .show();
+            } else {
+                // Request permissions
+                EasyPermissions.requestPermissions(this, "We need camera permission to take photos.",
+                        RC_CAMERA_PERM, perms);
+            }
         }
     }
 
