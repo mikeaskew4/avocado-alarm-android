@@ -36,10 +36,10 @@ public class TimeUtils {
         return "just now";
     }
 
-    public static Object[] getTimeRemaining(String dateTime, int timer) {
+    public static Object[] getTimeRemaining(String dateTime, int timer, int squishiness) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.parse(dateTime, formatter);
-        LocalDateTime targetTime = localDateTime.plusMinutes(timer);
+        LocalDateTime targetTime = localDateTime.plusMinutes(timer - (squishiness * 60));
         LocalDateTime now = LocalDateTime.now();
 
         Duration timeRemaining = Duration.between(now, targetTime);

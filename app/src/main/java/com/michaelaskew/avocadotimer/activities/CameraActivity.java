@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.michaelaskew.avocadotimer.R;
@@ -34,6 +36,9 @@ public class CameraActivity extends AppCompatActivity {
 
     private Uri capturedImageUri;
 
+    private RelativeLayout sliderFeedback;
+    private SeekBar softnessSlider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +48,9 @@ public class CameraActivity extends AppCompatActivity {
         preCaptureFeedback = findViewById(R.id.preCaptureFeedback);
         postCaptureFeedback = findViewById(R.id.postCaptureFeedback);
         capturedImageView = findViewById(R.id.capturedImageView);
+
+        sliderFeedback = findViewById(R.id.sliderFeedback);
+        softnessSlider = findViewById(R.id.softnessSlider);
 
         initCamera();
     }
@@ -71,13 +79,11 @@ public class CameraActivity extends AppCompatActivity {
 
                 Button acceptImageButton = findViewById(R.id.acceptImageButton);
                 acceptImageButton.setOnClickListener(v -> {
-                    // Handle the image acceptance
-                    // You can use an intent to pass the captured image URI to another activity or do other tasks
-                    Intent intent = new Intent(CameraActivity.this, AvocadoDetailActivity.class);
-                    intent.putExtra("capturedImageUri", capturedImageUri.toString());
-                    startActivity(intent);
-                    finish();
+                    preCaptureFeedback.setVisibility(View.GONE);
+                    postCaptureFeedback.setVisibility(View.GONE);
+                    sliderFeedback.setVisibility(View.VISIBLE);
                 });
+
 
                 Button rejectImageButton = findViewById(R.id.rejectImageButton);
                 rejectImageButton.setOnClickListener(v -> {
@@ -86,6 +92,18 @@ public class CameraActivity extends AppCompatActivity {
                     preCaptureFeedback.setVisibility(View.VISIBLE);
                     postCaptureFeedback.setVisibility(View.GONE);
                 });
+
+                Button confirmSoftnessButton = findViewById(R.id.confirmSoftnessButton);
+                confirmSoftnessButton.setOnClickListener(v -> {
+                    int softnessValue = softnessSlider.getProgress();
+
+                    Intent intent = new Intent(CameraActivity.this, AvocadoDetailActivity.class);
+                    intent.putExtra("capturedImageUri", capturedImageUri.toString());
+                    intent.putExtra("capturedSquishinessValue", softnessValue);
+                    startActivity(intent);
+                    finish();
+                });
+
             } catch (ExecutionException | InterruptedException e) {
                 // Handle any errors
             }

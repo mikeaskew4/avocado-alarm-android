@@ -27,6 +27,7 @@ import com.michaelaskew.avocadotimer.adapters.AvocadoAdapter;
 import com.michaelaskew.avocadotimer.database.DatabaseHelper;
 import com.michaelaskew.avocadotimer.models.Avocado;
 import com.michaelaskew.avocadotimer.utilities.ImageCaptureManager;
+import com.michaelaskew.avocadotimer.utilities.UpdateHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +42,10 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity implements ImageCaptureManager.ImageCaptureListener,  EasyPermissions.PermissionCallbacks  {
 
+    private UpdateHelper mUpdateHelper;
+
     ImageCaptureManager imageCaptureManager;
+
     private static final int PERMISSION_REQUEST_CODE = 100;
 
     private static final int RC_PERMISSIONS = 123;
@@ -77,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
             editor.putBoolean("firstTime", false);
             editor.apply();
         }
+
+        mUpdateHelper = new UpdateHelper(this);
+        mUpdateHelper.checkForUpdate();
 
         imageCaptureManager = new ImageCaptureManager(this);
         imageCaptureManager.setListener(this);
@@ -242,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
     protected void onResume() {
         super.onResume();
         loadAvocados();
+        mUpdateHelper.onResumeUpdate();
     }
 
     @Override
@@ -265,6 +273,10 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imageCaptureManager.onActivityResult(requestCode, resultCode, data);
+
+//        if (!mUpdateHelper.onActivityResult(requestCode, resultCode)) {
+//            // Handle other activity results if necessary
+//        }
     }
 
     public void avocadoUploadImageClick(View v) {
@@ -326,8 +338,5 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
         });
 
         comingSoonAlert.show();
-
     }
-
-
 }

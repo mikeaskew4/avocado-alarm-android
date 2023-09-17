@@ -44,7 +44,9 @@ public class AvocadoDetailActivity extends AppCompatActivity {
     private DatabaseHelper db;
 
     private Button deleteButton;
-    private Avocado selectedAvocado;
+    private Avocado avocado;
+
+    private int readyIn = 360;
 
     int selectedAvocadoId = -1;
 
@@ -63,16 +65,16 @@ public class AvocadoDetailActivity extends AppCompatActivity {
         selectedAvocadoId = getIntent().getIntExtra("avocado_id", -1);
         if (selectedAvocadoId > 0) {
             DatabaseHelper db = new DatabaseHelper(this);
-            selectedAvocado = db.getAvocado(selectedAvocadoId);
-            Uri capturedImageUri = Uri.parse(selectedAvocado.getImagePath());
+            avocado = db.getAvocado(selectedAvocadoId);
+            Uri capturedImageUri = Uri.parse(avocado.getImagePath());
             imgAvocado.setImageURI(capturedImageUri);
-            edtAvocadoName.setText(selectedAvocado.getName());
+            edtAvocadoName.setText(avocado.getName());
 
             // Formatting creation time for display
-            String creationTime = selectedAvocado.getCreationTime();
+            String creationTime = avocado.getCreationTime();
             tvCreationTime.setText(getString(R.string.creation_time) + TimeUtils.getRelativeTimeText(creationTime));
 
-            Object[] results = TimeUtils.getTimeRemaining(creationTime, 360);
+            Object[] results = TimeUtils.getTimeRemaining(creationTime, readyIn, avocado.getSquishiness());
             String formattedTime = (String) results[0];
             double fractionElapsed = (double) results[1];
 
@@ -87,11 +89,13 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
         } else {
             String imageUriString = getIntent().getStringExtra("capturedImageUri");
+            int capturedSquishinessValue = getIntent().getIntExtra("capturedSquishinessValue", 0);
             Uri capturedImageUri = Uri.parse(imageUriString);
 
             imgAvocado.setImageURI(capturedImageUri);
+//            tvCreationTime.setText(LocalDateTime.now().toString());
             // Assuming you're passing the Avocado object via intent (this is just an example)
-            Avocado avocado = (Avocado) getIntent().getSerializableExtra("avocado");
+            avocado = (Avocado) getIntent().getSerializableExtra("avocado");
 
             if (avocado != null) {
                 avocado.setImagePath(capturedImageUri.toString());
@@ -99,7 +103,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
                 if (avocado.getCreationTime() == null) {
                     avocado.setCreationTime(LocalDateTime.now().toString());
                 }
-
+                avocado.setSquishiness(capturedSquishinessValue);
                 // TODO: Load image into imgAvocado using Glide or Picasso
                 edtAvocadoName.setText(avocado.getName());
 
@@ -125,6 +129,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
     private void saveAvocado() {
         DatabaseHelper db = new DatabaseHelper(AvocadoDetailActivity.this);
         String imageUriString = getIntent().getStringExtra("capturedImageUri");
+        int squishinessValue = getIntent().getIntExtra("capturedSquishinessValue", 0);
 
         if (imageUriString != null) { // Assuming Avocado's ID is an Integer. Check if it's null (or 0 if it's int).
             // New avocado, insert it
@@ -132,15 +137,18 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             Avocado avocado = new Avocado();
             avocado.setName(edtAvocadoName.getText().toString());
             avocado.setImagePath(imageUriString);
+            avocado.setSquishiness(squishinessValue);
             if (avocado.getCreationTime() == null) {
 //                avocado.setCreationTime(new String[]{LocalDateTime.now()});
             }
             // ... set other fields ...
 
+//            avocado.setCreationTime(LocalDateTime.now().toString());
             long newId = db.insertAvocado(avocado);
             avocado.setId((int) newId); // Set the newly generated ID to your avocado object
             Toast.makeText(AvocadoDetailActivity.this, "Avocado added!", Toast.LENGTH_SHORT).show();
-            setAvocadoReadyAlarm(5000);
+            // @@TODO - temp timer
+            setAvocadoReadyAlarm(readyIn - (squishinessValue * 60 * 40 ));
         } else {
             // Existing avocado, update it
             Avocado selectedAvocado = db.getAvocado(selectedAvocadoId);
@@ -156,7 +164,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
     }
 
     private void deleteCurrentAvocado() {
-        if (selectedAvocado != null && db.deleteAvocado(selectedAvocado.getId())) {
+        if (avocado != null && db.deleteAvocado(avocado.getId())) {
             Toast.makeText(this, "Avocado deleted!", Toast.LENGTH_SHORT).show();
             finish();
         } else {

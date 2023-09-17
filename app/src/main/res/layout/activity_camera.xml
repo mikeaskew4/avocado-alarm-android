@@ -65,7 +65,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/preCaptureFeedback"
+                android:id="@+id/preCaptureFeedbackInner"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:background="#66000000"
@@ -109,5 +109,57 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>
+    <RelativeLayout
+        android:id="@+id/sliderFeedback"
+        android:visibility="gone"
 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="#66000000"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1">
+                <SeekBar
+                    android:id="@+id/softnessSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:max="5"
+                    android:min="1"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/softnessLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/softnessSlider"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="#FFFFFF"
+                    android:text="Firm ... Squishy" />
+
+                <Button
+                    android:id="@+id/confirmSoftnessButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm"
+                    android:layout_below="@+id/softnessLabel"
+                    android:layout_centerHorizontal="true" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </FrameLayout>

@@ -45,6 +45,8 @@
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:textColor="@android:color/holo_red_light"
             android:text="Delete Avocado"/>
 
     </LinearLayout>

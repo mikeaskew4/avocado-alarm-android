@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "avocado.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     // Table columns
     public static final String TABLE_NAME = "avocado_table";
@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_IMAGE_URI = "image_uri";
     public static final String COLUMN_CREATION_TIME = "creation_time";
+    public static final String COLUMN_SQUISHINESS = "squishiness";
 
     // ... add more columns as needed ...
 
@@ -37,7 +38,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_IMAGE_URI + " TEXT,"
-                + COLUMN_CREATION_TIME + " TEXT DEFAULT (datetime('now', 'localtime'))" + ")";
+                + COLUMN_CREATION_TIME + " TEXT DEFAULT (datetime('now', 'localtime')),"
+                + COLUMN_SQUISHINESS + " INTEGER"
+                + ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -64,6 +67,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 avocado.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
                 avocado.setImagePath(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_URI)));
                 avocado.setCreationTime(cursor.getString(cursor.getColumnIndex(COLUMN_CREATION_TIME)));
+                avocado.setSquishiness(cursor.getInt(cursor.getColumnIndex(COLUMN_SQUISHINESS)));
+
                 // Add other fields as necessary...
 
                 // Adding avocado to list
@@ -88,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_NAME,
                 COLUMN_IMAGE_URI,
                 COLUMN_CREATION_TIME,
+                COLUMN_SQUISHINESS,
                 // others...
             }, COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
 
@@ -98,6 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             avocado.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
             avocado.setImagePath(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_URI)));
             avocado.setCreationTime(cursor.getString(cursor.getColumnIndex(COLUMN_CREATION_TIME)));
+            avocado.setSquishiness(cursor.getInt(cursor.getColumnIndex(COLUMN_SQUISHINESS)));
             // ... (set other attributes)
 
             cursor.close();
@@ -113,6 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, avocado.getName());
         values.put(COLUMN_IMAGE_URI, avocado.getImagePath());
+        values.put(COLUMN_SQUISHINESS, avocado.getSquishiness());
         // values.put(COLUMN_CREATION_TIME, String.valueOf(avocado.getCreationTime()));
         // ... other fields ...
 

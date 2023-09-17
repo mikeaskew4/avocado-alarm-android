@@ -45,11 +45,13 @@ public class AvocadoAdapter extends RecyclerView.Adapter<AvocadoAdapter.AvocadoV
         Avocado avocado = avocadoList.get(position);
 
         boolean nameIsSet = !avocado.getName().isEmpty();
-        holder.tvName.setText(nameIsSet ? avocado.getName() : "[No Name]");
         String creationTime = avocado.getCreationTime();
+        int squishiness = avocado.getSquishiness();
+        holder.tvName.setText(nameIsSet ? avocado.getName() : "[No Name]");
+
         holder.tvCreatedAt.setText(TimeUtils.getRelativeTimeText(creationTime));
 
-        double fractionElapsed = (double) TimeUtils.getTimeRemaining(creationTime, 360)[1]; // Assuming this method returns the correct value
+        double fractionElapsed = (double) TimeUtils.getTimeRemaining(creationTime, 360, squishiness)[1]; // Assuming this method returns the correct value
         holder.circleChartView.setFractionElapsed(fractionElapsed);  // Set the fraction elapsed to the CircleChartView of the current item
 
         // ... (set other attributes of avocado)

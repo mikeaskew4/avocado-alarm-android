@@ -7,6 +7,7 @@ public class Avocado implements Serializable {
     private String name;
     private String imagePath;
     private String creationTime;
+    private int squishiness;
 
     // Constructors, getters, and setters...
     public String getName() {
@@ -40,4 +41,8 @@ public class Avocado implements Serializable {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+    public int getSquishiness() { return squishiness; }
+
+    public void setSquishiness(int squishiness) { this.squishiness = squishiness; }
 }
