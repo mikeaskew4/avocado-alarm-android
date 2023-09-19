@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Size;
 import android.view.Gravity;
 import android.view.TextureView;
 import android.view.View;
@@ -32,9 +33,14 @@ import org.tensorflow.lite.support.label.Category;
 import org.tensorflow.lite.task.vision.classifier.Classifications;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -65,68 +71,79 @@ public class CameraActivity extends AppCompatActivity {
         sliderFeedback = findViewById(R.id.sliderFeedback);
         softnessSlider = findViewById(R.id.softnessSlider);
 
-
         initClassifier();
         initCamera();
     }
 
     private void initClassifier() {
+        // @@TODO bring these into the model (non-quantized) --or-- make model binary
+        String[] classNames = {
+                "acerolas", "apples", "apricots", "avocados", "bananas", "blackberries", "blueberries", "cantaloupes", "cherries", "coconuts", "figs", "grapefruits", "grapes", "guava", "kiwifruit", "lemons", "limes", "mangos", "olives", "oranges", "passionfruit", "peaches", "pears", "pineapples", "plums", "pomegranates", "raspberries", "strawberries", "tomatoes", "watermelons"
+        };
         imageClassifierHelper = ImageClassifierHelper.create(
-                this,
-                new ImageClassifierHelper.ClassifierListener() {
-                    @Override
-                    public void onError(String error) {
-                        // Handle error here
-                        Toast.makeText(CameraActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
-                    }
+            this,
+            new ImageClassifierHelper.ClassifierListener() {
+                @Override
+                public void onError(String error) {
+                    // Handle error here
+                    Toast.makeText(CameraActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+                }
 
-                    @Override
-                    public void onResults(List<Classifications> results, long inferenceTime) {
-                        // Handle the results here
-                        if (results.size() > 0) {
+                @Override
+                public void onResults(List<Classifications> results, long inferenceTime) {
+                    // Handle the results here
+                    if (results.size() > 0) {
+                        Log.d("CameraActivity", "***********************************");
+                        Log.d("CameraActivity", "***********************************");
+                        Log.d("CameraActivity", "Results: " + results.toString());
+                        Log.d("CameraActivity", "***********************************");
+                        Log.d("CameraActivity", "***********************************");
 
-                            Log.d("CameraActivity", "***********************************");
-                            Log.d("CameraActivity", "***********************************");
-                            Log.d("CameraActivity", "Results: " + results.toString());
-                            Log.d("CameraActivity", "***********************************");
-                            Log.d("CameraActivity", "***********************************");
-
-
-                            boolean hasAvocado = false;
-                            ArrayList<String> displayNames = new ArrayList<>();
-                            for (org.tensorflow.lite.task.vision.classifier.Classifications classification : results) {
-                                for (org.tensorflow.lite.support.label.Category category : classification.getCategories()) {
-                                    displayNames.add(category.getLabel());
-                                    if (category.getLabel() == "avocado") {
-                                        hasAvocado = true;
-                                    }
+                        boolean hasAvocado = false;
+                        ArrayList<String> displayNames = new ArrayList<>();
+                        for (org.tensorflow.lite.task.vision.classifier.Classifications classification : results) {
+                            for (org.tensorflow.lite.support.label.Category category : classification.getCategories()) {
+                                String categoryName = classNames[Integer.parseInt(category.getLabel())];
+                                displayNames.add(categoryName);
+                                if (categoryName == "avocados") {
+                                    hasAvocado = true;
                                 }
                             }
-                            String toastMessage = "Hmm, we see a " + String.join(", a ", displayNames) + "... but not an avocado";
-                            if (hasAvocado) {
-                                toastMessage = "Confirmed avocado sighting!";
-                            }
+                        }
+                        String toastMessage = "Hmm, we see " + String.join(", ", displayNames) + "... but not an avocado";
+                        if (hasAvocado) {
+                            toastMessage = "That's quite a looker!";
                             Toast toast = Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
                             toast.show();
+                        } else {
+                            // don't show anything
                         }
                     }
                 }
+            }
         );
-
-
     }
 
     private void initCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        // Define the desired square aspect ratio
+        int targetAspectRatio = 1; // 1:1
+        // Calculate the target resolution based on the aspect ratio
+        Size targetSize = new Size(640, 640); // You can adjust the size as needed
+
         cameraProviderFuture.addListener(() -> {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
                 Preview preview = new Preview.Builder().build();
 
-                imageCapture = new ImageCapture.Builder().build();
+                imageCapture = new ImageCapture.Builder()
+                        .setTargetResolution(targetSize)
+                        .build();
 
-                CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
+                CameraSelector cameraSelector = new CameraSelector.Builder()
+                        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                        .build();
 
                 cameraProvider.unbindAll();
 
@@ -134,7 +151,8 @@ public class CameraActivity extends AppCompatActivity {
 
                 preview.setSurfaceProvider(cameraPreviewView.getSurfaceProvider());
 
-
+                // set up buttons
+                // @@TODO - better logic
                 Button captureButton = findViewById(R.id.captureButton);
                 captureButton.setOnClickListener(v -> captureImage());
 
@@ -144,7 +162,6 @@ public class CameraActivity extends AppCompatActivity {
                     postCaptureFeedback.setVisibility(View.GONE);
                     sliderFeedback.setVisibility(View.VISIBLE);
                 });
-
 
                 Button rejectImageButton = findViewById(R.id.rejectImageButton);
                 rejectImageButton.setOnClickListener(v -> {
@@ -161,15 +178,44 @@ public class CameraActivity extends AppCompatActivity {
                     Intent intent = new Intent(CameraActivity.this, AvocadoDetailActivity.class);
                     intent.putExtra("capturedImageUri", capturedImageUri.toString());
                     intent.putExtra("capturedSquishinessValue", softnessValue);
+//                    saveImage();
                     startActivity(intent);
                     finish();
                 });
 
             } catch (ExecutionException | InterruptedException e) {
                 // Handle any errors
+                // @@ TODO
             }
         }, ContextCompat.getMainExecutor(this));
     }
+
+    // Save Image to Camera Roll
+    // @@TODO not for production
+    private void saveImage() {
+        ImageCapture imageCapture = new ImageCapture.Builder().build();
+        // Define output file options for saving the captured image
+        File outputDirectory = new File(getExternalMediaDirs()[0], "AvocadoTimer"); // Change directory as needed
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + ".jpg";
+        File outputFile = new File(outputDirectory, imageFileName);
+
+        ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(outputFile).build();
+
+        // Capture the image and save it to the photo library/camera roll
+        imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this), new ImageCapture.OnImageSavedCallback() {
+            @Override
+            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                // Image saved successfully, you can add your logic here
+            }
+
+            @Override
+            public void onError(@NonNull ImageCaptureException exception) {
+                // Handle error if image capture fails
+            }
+        });
+    }
+
 
     // Capture Image
     private void captureImage() {
@@ -207,7 +253,7 @@ public class CameraActivity extends AppCompatActivity {
                 }
 
                 if (bitmap != null) {
-                    imageClassifierHelper.classify(bitmap, 0);
+                    imageClassifierHelper.classify(bitmap, rotation);
                 }
 
             }

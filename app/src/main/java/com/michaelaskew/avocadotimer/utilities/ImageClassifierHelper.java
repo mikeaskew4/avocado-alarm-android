@@ -68,10 +68,10 @@ public class ImageClassifierHelper {
             ClassifierListener listener
     ) {
         return new ImageClassifierHelper(
-                0.1f,
-                2,
-                3,
-                0,
+                0.5f,
+                10,
+                10,
+                1,
                 0,
                 context,
                 listener
@@ -127,8 +127,8 @@ public class ImageClassifierHelper {
                 if (new CompatibilityList().isDelegateSupportedOnThisDevice()) {
                     baseOptionsBuilder.useGpu();
                 } else {
-                    imageClassifierListener.onError("GPU is not supported on "
-                            + "this device");
+//                    imageClassifierListener.onError("GPU is not supported on "
+//                            + "this device");
                 }
                 break;
             case DELEGATE_NNAPI:
@@ -138,7 +138,7 @@ public class ImageClassifierHelper {
         String modelName;
         switch (currentModel) {
             case MODEL_MOBILENETV1:
-                modelName = "mobilenetv1.tflite";
+                modelName = "mobilenet_fids30_quantized_v2.tflite";
                 break;
             case MODEL_EFFICIENTNETV0:
                 modelName = "efficientnet-lite0.tflite";
@@ -150,7 +150,7 @@ public class ImageClassifierHelper {
                 modelName = "efficientnet-lite2.tflite";
                 break;
             default:
-                modelName = "mobilenetv1.tflite";
+                modelName = "mobilenet_fids30_quantized_v2.tflite";
         }
         try {
 
