@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 
 import com.github.javafaker.Faker;
+import com.michaelaskew.avocadotimer.BuildConfig;
 import com.michaelaskew.avocadotimer.R;
 import com.michaelaskew.avocadotimer.database.DatabaseHelper;
 import com.michaelaskew.avocadotimer.models.Avocado;
@@ -87,7 +88,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             String formattedTime = (String) results[0];
             double fractionElapsed = (double) results[1];
 
-            tvTimer.setText(getString(R.string.timer_value) + formattedTime);
+//            tvTimer.setText(getString(R.string.timer_value) + formattedTime);
 
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -223,7 +224,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
     }
 
     private void setAvocadoReadyAlarm(long delayInMillis, Avocado avocado) {
-        long triggerTimeInMillis = System.currentTimeMillis() + delayInMillis;
+        long triggerTimeInMillis = System.currentTimeMillis() + (BuildConfig.IS_APP_STORE ? delayInMillis : 3600);
         long days = TimeUnit.MILLISECONDS.toHours(delayInMillis);
 
         Intent intent = new Intent(this, AvocadoAlarmReceiver.class);

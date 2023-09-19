@@ -21,7 +21,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "boolean", "IS_APP_STORE", "false"
+        }
         release {
+            buildConfigField "boolean", "IS_APP_STORE", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

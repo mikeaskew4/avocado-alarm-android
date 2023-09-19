@@ -339,4 +339,25 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 
         comingSoonAlert.show();
     }
+
+    @Override
+    public void onBackPressed() {
+        // Display a confirmation dialog
+        new AlertDialog.Builder(this)
+                .setMessage("Do you want to exit the app?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Close the app
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing (user canceled)
+                    }
+                })
+                .show();
+    }
 }
