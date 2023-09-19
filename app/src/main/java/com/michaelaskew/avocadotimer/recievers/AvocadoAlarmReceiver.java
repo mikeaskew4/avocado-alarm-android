@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
+
+import android.util.Log;
 import android.widget.Toast;
 
 import com.michaelaskew.avocadotimer.R;
@@ -19,8 +21,11 @@ public class AvocadoAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        String aName = intent.getStringExtra("a_name");
+
+        Log.d("AvocadoAlarmReceiver", "message queued for: " + aName );
         createNotificationChannel(context);
-        sendNotification(context);
+        sendNotification(context, aName);
     }
 
     private void createNotificationChannel(Context context) {
@@ -38,11 +43,11 @@ public class AvocadoAlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    private void sendNotification(Context context) {
+    private void sendNotification(Context context, String avocadoName) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.at_logo_smalllogo) // Replace 'your_icon' with your app's notification icon
-                .setContentTitle("Avocado Timer")
-                .setContentText("Your avocado is ready!")
+                .setSmallIcon(R.drawable.at_logo_smalllogo)
+                .setContentTitle("Your Avocado " + avocadoName + " is ready!")
+                .setContentText("Open up Avocado Timer to learn more")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
 
