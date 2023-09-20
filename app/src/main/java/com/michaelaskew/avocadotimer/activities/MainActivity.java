@@ -248,6 +248,10 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
     @Override
     protected void onResume() {
         super.onResume();
+        // Check if the list is empty before resuming
+        if (avocadoList.isEmpty()) {
+            rvAvocadoList.getAdapter().notifyDataSetChanged();
+        }
         loadAvocados();
         mUpdateHelper.onResumeUpdate();
     }

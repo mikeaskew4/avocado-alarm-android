@@ -150,7 +150,6 @@ public class AvocadoDetailActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void saveAvocado() {
@@ -192,6 +191,41 @@ public class AvocadoDetailActivity extends AppCompatActivity {
          finish();
     }
 
+    private void saveAvocado(boolean notificationsEnabled) {
+        DatabaseHelper db = new DatabaseHelper(AvocadoDetailActivity.this);
+        String imageUriString = getIntent().getStringExtra("capturedImageUri");
+        int squishinessValue = getIntent().getIntExtra("capturedSquishinessValue", 0);
+
+        if (imageUriString != null) { // Assuming Avocado's ID is an Integer. Check if it's null (or 0 if it's int).
+            // New avocado, insert it
+            // Create a new Avocado object with data from your views (EditText, ImageView, etc.)
+            Avocado avocado = new Avocado();
+            avocado.setName(edtAvocadoName.getText().toString());
+            avocado.setImagePath(imageUriString);
+            avocado.setSquishiness(squishinessValue);
+            if (avocado.getCreationTime() == null) {
+//                avocado.setCreationTime(new String[]{LocalDateTime.now()});
+            }
+            // ... set other fields ...
+
+//            avocado.setCreationTime(LocalDateTime.now().toString());
+            long newId = db.insertAvocado(avocado);
+            avocado.setId((int) newId); // Set the newly generated ID to your avocado object
+            Toast.makeText(AvocadoDetailActivity.this, "Avocado added!", Toast.LENGTH_SHORT).show();
+        } else {
+            // Existing avocado, update it
+            Avocado selectedAvocado = db.getAvocado(selectedAvocadoId);
+            selectedAvocado.setName(edtAvocadoName.getText().toString());
+            // ... set other fields ...
+
+            db.updateAvocado(selectedAvocado);
+            Toast.makeText(AvocadoDetailActivity.this, "Avocado updated!", Toast.LENGTH_SHORT).show();
+        }
+
+        // Optional: You can finish the activity if you want to go back to the main screen after saving
+        finish();
+    }
+
     private void deleteCurrentAvocado() {
         if (avocado != null && db.deleteAvocado(avocado.getId())) {
             Toast.makeText(this, "Avocado deleted!", Toast.LENGTH_SHORT).show();
@@ -211,6 +245,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             EasyPermissions.requestPermissions(this, "We need notifications permission to let you know the timer is doner.",
                     RC_NOTIFICATIONS_PERM, perms);
         }
+        saveAvocado(false);
     }
 
     @Override
