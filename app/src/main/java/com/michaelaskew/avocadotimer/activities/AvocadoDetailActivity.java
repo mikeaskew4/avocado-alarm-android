@@ -245,7 +245,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             EasyPermissions.requestPermissions(this, "We need notifications permission to let you know the timer is doner.",
                     RC_NOTIFICATIONS_PERM, perms);
         }
-        saveAvocado(false);
+//        saveAvocado(false);
     }
 
     @Override
