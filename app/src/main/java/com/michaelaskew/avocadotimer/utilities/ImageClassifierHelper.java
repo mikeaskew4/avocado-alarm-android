@@ -68,7 +68,7 @@ public class ImageClassifierHelper {
             ClassifierListener listener
     ) {
         return new ImageClassifierHelper(
-                0.5f,
+                0.15f,
                 10,
                 10,
                 1,
@@ -138,7 +138,7 @@ public class ImageClassifierHelper {
         String modelName;
         switch (currentModel) {
             case MODEL_MOBILENETV1:
-                modelName = "mobilenet_fids30_quantized_v4.tflite";
+                modelName = "mobilenet_fids30_quantized_v6.tflite";
                 break;
             case MODEL_EFFICIENTNETV0:
                 modelName = "efficientnet-lite0.tflite";
@@ -150,7 +150,7 @@ public class ImageClassifierHelper {
                 modelName = "efficientnet-lite2.tflite";
                 break;
             default:
-                modelName = "mobilenet_fids30_quantized_v4.tflite";
+                modelName = "mobilenet_fids30_quantized_v6.tflite";
         }
         try {
 

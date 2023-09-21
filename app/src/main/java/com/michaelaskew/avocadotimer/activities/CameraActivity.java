@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -50,6 +51,7 @@ public class CameraActivity extends AppCompatActivity {
     private ImageView capturedImageView;
 
     private ImageCapture imageCapture;
+    private TextView caputredImageFeedback;
 
     private Uri capturedImageUri;
 
@@ -67,6 +69,8 @@ public class CameraActivity extends AppCompatActivity {
         preCaptureFeedback = findViewById(R.id.preCaptureFeedback);
         postCaptureFeedback = findViewById(R.id.postCaptureFeedback);
         capturedImageView = findViewById(R.id.capturedImageView);
+        caputredImageFeedback = findViewById(R.id.capturedImageFeedback);
+        caputredImageFeedback.setAllCaps(false);
 
         sliderFeedback = findViewById(R.id.sliderFeedback);
         softnessSlider = findViewById(R.id.softnessSlider);
@@ -110,15 +114,14 @@ public class CameraActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        String toastMessage = "Hmm, we see " + String.join(", ", displayNames) + "... but not an avocado";
-                        if (hasAvocado) {
-                            toastMessage = "That's quite a looker!";
-                            Toast toast = Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
-                            toast.show();
-                        } else {
-                            // don't show anything
+                        String toastMessage = "Didn't see an avocado, but we'll take your word for it.";
+                        if (!displayNames.isEmpty()) {
+                            toastMessage = "Are you sure there's an avocado there? Looks like " + displayNames.get(0) + "... but AI isn't very bright";
+                            if (hasAvocado) {
+                                toastMessage = "Nice avocado!";
+                            }
                         }
+                        caputredImageFeedback.setText(toastMessage);
                     }
                 }
             }
@@ -235,7 +238,7 @@ public class CameraActivity extends AppCompatActivity {
                 postCaptureFeedback.setVisibility(View.VISIBLE);
 
                 // Resizing the bitmap
-                int modelInputSize = 224; // Adjust this based on your model's input size
+                int modelInputSize = 299; // Adjust this based on your model's input size
                 bitmap = Bitmap.createScaledBitmap(bitmap, modelInputSize, modelInputSize, true);
 
                 // Normalizing the bitmap (if needed)
