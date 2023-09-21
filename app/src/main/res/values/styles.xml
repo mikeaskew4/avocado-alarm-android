@@ -9,8 +9,8 @@
     </style>
 
     <!-- Define colors for your app -->
-    <color name="colorPrimary">#4CAF50</color> <!-- Avocado green -->
-    <color name="colorPrimaryDark">#388E3C</color> <!-- Darker avocado green -->
+    <color name="colorPrimary">#315624</color> <!-- Avocado green -->
+    <color name="colorPrimaryDark">#213d17</color> <!-- Darker avocado green -->
     <color name="colorAccent">#FFC107</color> <!-- Amber for accents, you can choose your color -->
 
     <!-- More styles can be added here as required. For example, if you want custom styles for buttons, text views, etc. -->

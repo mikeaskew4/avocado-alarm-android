@@ -34,7 +34,7 @@ public class CircleChartView extends View {
         } else if (fractionElapsed < -0.25) {
             paint.setColor(Color.rgb(139,69,19)); // Brown color
         } else {
-            paint.setColor(Color.rgb(34,139,34)); // Avocado green color
+            paint.setColor(Color.rgb(154,205,50)); // Avocado green color
         }
 
         canvas.drawCircle(width / 2, height / 2, radius, paint);
