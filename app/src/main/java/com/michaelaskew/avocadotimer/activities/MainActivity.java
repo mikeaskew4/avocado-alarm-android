@@ -306,9 +306,10 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 
         String[] perms = {Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this, perms)) {
-//            imageCaptureManager.captureImage();
-            Intent cameraIntent = new Intent(this, CameraActivity.class);
-            startActivity(cameraIntent);
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+
         } else {
             if (deniedCount > 0 && EasyPermissions.somePermissionPermanentlyDenied(this, Arrays.asList(perms))) {
                 // If permissions are permanently denied and have been denied at least once before

@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
@@ -60,6 +62,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private ImageClassifierHelper imageClassifierHelper;
 
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,15 +79,30 @@ public class CameraActivity extends AppCompatActivity {
         sliderFeedback = findViewById(R.id.sliderFeedback);
         softnessSlider = findViewById(R.id.softnessSlider);
 
+        gestureDetector = new GestureDetector(this, new SwipeGestureListener());
+
         initClassifier();
         initCamera();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+    }
+
     private void initClassifier() {
         // @@TODO bring these into the model (non-quantized) --or-- make model binary
-        String[] classNames = {
-                "acerolas", "apples", "apricots", "avocados", "bananas", "blackberries", "blueberries", "cantaloupes", "cherries", "coconuts", "figs", "grapefruits", "grapes", "guava", "kiwifruit", "lemons", "limes", "mangos", "olives", "oranges", "passionfruit", "peaches", "pears", "pineapples", "plums", "pomegranates", "raspberries", "strawberries", "tomatoes", "watermelons"
-        };
+//        String[] classNames = {
+//                "acerolas", "apples", "apricots", "avocados", "bananas", "blackberries", "blueberries", "cantaloupes", "cherries", "coconuts", "figs", "grapefruits", "grapes", "guava", "kiwifruit", "lemons", "limes", "mangos", "olives", "oranges", "passionfruit", "peaches", "pears", "pineapples", "plums", "pomegranates", "raspberries", "strawberries", "tomatoes", "watermelons"
+//        };
+//        String[] classNames = {"Apple Braeburn", "Apple Crimson Snow", "Apple Golden 1", "Apple Golden 2", "Apple Golden 3", "Apple Granny Smith", "Apple Pink Lady", "Apple Red 1", "Apple Red 2", "Apple Red 3", "Apple Red Delicious", "Apple Red Yellow 1", "Apple Red Yellow 2", "Apricot", "Avocado", "Avocado ripe", "Banana", "Banana Lady Finger", "Banana Red", "Beetroot", "Blueberry", "Cactus fruit", "Cantaloupe 1", "Cantaloupe 2", "Carambula", "Cauliflower", "Cherry 1", "Cherry 2", "Cherry Rainier", "Cherry Wax Black", "Cherry Wax Red", "Cherry Wax Yellow", "Chestnut", "Clementine", "Cocos", "Corn", "Corn Husk", "Cucumber Ripe", "Cucumber Ripe 2", "Dates", "Eggplant", "Fig", "Ginger Root", "Granadilla", "Grape Blue", "Grape Pink", "Grape White", "Grape White 2", "Grape White 3", "Grape White 4", "Grapefruit Pink", "Grapefruit White", "Guava", "Hazelnut", "Huckleberry", "Kaki", "Kiwi", "Kohlrabi", "Kumquats", "Lemon", "Lemon Meyer", "Limes", "Lychee", "Mandarine", "Mango", "Mango Red", "Mangostan", "Maracuja", "Melon Piel de Sapo", "Mulberry", "Nectarine", "Nectarine Flat", "Nut Forest", "Nut Pecan", "Onion Red", "Onion Red Peeled", "Onion White", "Orange", "Papaya", "Passion Fruit", "Peach", "Peach 2", "Peach Flat", "Pear", "Pear 2", "Pear Abate", "Pear Forelle", "Pear Kaiser", "Pear Monster", "Pear Red", "Pear Stone", "Pear Williams", "Pepino", "Pepper Green", "Pepper Orange", "Pepper Red", "Pepper Yellow", "Physalis", "Physalis with Husk", "Pineapple", "Pineapple Mini", "Pitahaya Red", "Plum", "Plum 2", "Plum 3", "Pomegranate", "Pomelo Sweetie", "Potato Red", "Potato Red Washed", "Potato Sweet", "Potato White", "Quince", "Rambutan", "Raspberry", "Redcurrant", "Salak", "Strawberry", "Strawberry Wedge", "Tamarillo", "Tangelo", "Tomato 1", "Tomato 2", "Tomato 3", "Tomato 4", "Tomato Cherry Red", "Tomato Heart", "Tomato Maroon", "Tomato Yellow", "Tomato not Ripened", "Walnut", "Watermelon"};
+        String[] classNames = {"Avocado", "Avocado ripe"};
         imageClassifierHelper = ImageClassifierHelper.create(
             this,
             new ImageClassifierHelper.ClassifierListener() {
@@ -109,18 +128,19 @@ public class CameraActivity extends AppCompatActivity {
                             for (org.tensorflow.lite.support.label.Category category : classification.getCategories()) {
                                 String categoryName = classNames[Integer.parseInt(category.getLabel())];
                                 displayNames.add(categoryName);
-                                if (categoryName == "avocados") {
+                                Log.d("CameraActivity", "Results: " + categoryName);
+                                if (categoryName == "Avocado" || categoryName == "Avocado ripe") {
                                     hasAvocado = true;
                                 }
                             }
                         }
                         String toastMessage = "Didn't see an avocado, but we'll take your word for it.";
-                        if (!displayNames.isEmpty()) {
-                            toastMessage = "Are you sure there's an avocado there? Looks like " + displayNames.get(0) + "... but AI isn't very bright";
+//                        if (!displayNames.isEmpty()) {
+//                            toastMessage = "Are you sure there's an avocado there? Looks like " + displayNames.get(0) + "... but AI isn't very bright";
                             if (hasAvocado) {
                                 toastMessage = "Nice avocado!";
                             }
-                        }
+//                        }
                         caputredImageFeedback.setText(toastMessage);
                     }
                 }
@@ -267,4 +287,30 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
     }
+
+    private class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        private static final int SWIPE_THRESHOLD = 100;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            float diffY = e2.getY() - e1.getY();
+            if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffY < 0) { // Swipe Up detected
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
+                }
+                return true;
+            }
+            return false;
+        }
+
+    }
+
 }

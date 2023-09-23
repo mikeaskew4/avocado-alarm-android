@@ -9,12 +9,8 @@
         android:id="@+id/cameraPreviewView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
     </androidx.camera.view.PreviewView>
+
 
     <!-- Overlay for pre-capture feedback -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,8 +21,7 @@
         <LinearLayout
             android:id="@+id/preCaptureFeedback"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="#66000000"
+            android:layout_height="300dp"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="visible"
@@ -39,15 +34,27 @@
 
             <Button
                 android:id="@+id/captureButton"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/circle_button"
+            />
+
+
+            <ImageView
+                android:id="@+id/caretDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Capture" />
-
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                app:tint="#FFFFFF"
+                android:src="@android:drawable/arrow_up_float" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Get ready to capture!"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/white"
+                android:text="swipe up to exit">
+            </TextView>
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
