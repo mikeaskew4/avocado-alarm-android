@@ -319,35 +319,8 @@ public class CameraActivity extends AppCompatActivity {
                 capturedImageUri = Uri.fromFile(new File(outputFileResults.getSavedUri().getPath()));
                 cropToSquare(capturedImageUri);
 
-                Bitmap bitmap = BitmapFactory.decodeFile(capturedImageUri.getPath());
-//                capturedImageView.setImageDrawable(null);
-//                capturedImageView.setImageURI(capturedImageUri);
-//                capturedImageView.invalidate();
                 preCaptureFeedback.setVisibility(View.GONE);
                 postCaptureFeedback.setVisibility(View.VISIBLE);
-
-//                // Resizing the bitmap
-//                int modelInputSize = 299; // Adjust this based on your model's input size
-//                bitmap = Bitmap.createScaledBitmap(bitmap, modelInputSize, modelInputSize, true);
-//
-//                // Normalizing the bitmap (if needed)
-//                int width = bitmap.getWidth();
-//                int height = bitmap.getHeight();
-//                int[] intValues = new int[width * height];
-//                bitmap.getPixels(intValues, 0, width, 0, 0, width, height);
-//                float[] floatValues = new float[width * height * 3];
-//
-//                for (int i = 0; i < intValues.length; i++) {
-//                    final int val = intValues[i];
-//                    floatValues[i * 3] = ((val >> 16) & 0xFF) / 255.0f;
-//                    floatValues[i * 3 + 1] = ((val >> 8) & 0xFF) / 255.0f;
-//                    floatValues[i * 3 + 2] = (val & 0xFF) / 255.0f;
-//                }
-//
-//                if (bitmap != null) {
-//                    imageClassifierHelper.classify(bitmap, rotation);
-//                }
-
             }
 
             @Override
