@@ -38,6 +38,7 @@ import org.tensorflow.lite.task.vision.classifier.Classifications;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -273,8 +274,18 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void displayCroppedImage(Bitmap squareBitmap) {
-        capturedImageView.setImageDrawable(null); // Clear the ImageView (optional if you always have a new image)
+        capturedImageView.setImageDrawable(null); // Clear the ImageView
         capturedImageView.setImageBitmap(squareBitmap);
+
+        saveBitmapToFile(squareBitmap, capturedImageUri);
+    }
+
+    private void saveBitmapToFile(Bitmap bitmap, Uri uri) {
+        try (OutputStream os = getContentResolver().openOutputStream(uri)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private int getOrientation(Uri imageUri) {
