@@ -121,17 +121,19 @@ public class CameraActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        String toastMessage = "Didn't see an avocado, but we'll take your word for it.";
+                        String toastMessage = "Is there an avocado there? Unless you want to try again, we'll take your word for it.";
                         if (!displayNames.isEmpty()) {
-                            toastMessage = "Are you sure there's an avocado there? Looks like " + displayNames.get(0) + "... but AI isn't very bright";
-                            if (hasAvocado) {
-                                toastMessage = "Nice avocado!";
-                            }
+                            toastMessage = "Hmmm...didn't clearly see the avocado in the photo (" + displayNames.get(0) + "?). But if you say so...";
                         }
-//                        caputredImageFeedback.setText(toastMessage);
+                        if (hasAvocado) {
+                            toastMessage = "Looks good!";
+                        }
+                        caputredImageFeedback.setText(toastMessage);
                     }
                 }
-            }
+            },
+            0,
+            0.15f
         );
     }
 
@@ -241,7 +243,7 @@ public class CameraActivity extends AppCompatActivity {
 
             Bitmap squareBitmap = Bitmap.createBitmap(bitmap, x, y, size, size);
             classifyImage(squareBitmap);
-            displayCroppedImage(squareBitmap);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -253,6 +255,7 @@ public class CameraActivity extends AppCompatActivity {
         // Resizing the bitmap
         int modelInputSize = 299; // Adjust this based on your model's input size
         Bitmap bitmap = Bitmap.createScaledBitmap(squareBitmap, modelInputSize, modelInputSize, true);
+        displayCroppedImage(bitmap);
 
         // Normalizing the bitmap (if needed)
         int width = bitmap.getWidth();
