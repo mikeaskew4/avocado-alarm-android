@@ -22,6 +22,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.InstallStatus;
 import com.michaelaskew.avocadotimer.R;
 import com.michaelaskew.avocadotimer.adapters.AvocadoAdapter;
 import com.michaelaskew.avocadotimer.database.DatabaseHelper;
@@ -43,6 +46,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity implements ImageCaptureManager.ImageCaptureListener,  EasyPermissions.PermissionCallbacks  {
 
     private UpdateHelper mUpdateHelper;
+    private InstallStateUpdatedListener mInstallStateListener;
 
     ImageCaptureManager imageCaptureManager;
 
@@ -84,7 +88,12 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 
         mUpdateHelper = new UpdateHelper(this);
         mUpdateHelper.checkForUpdate();
-
+        mInstallStateListener = installState -> {
+            if (installState.installStatus() == InstallStatus.DOWNLOADED) {
+                mUpdateHelper.showRestartDialog();
+            }
+        };
+        mUpdateHelper.registerListener(mInstallStateListener);
         imageCaptureManager = new ImageCaptureManager(this);
         imageCaptureManager.setListener(this);
 
@@ -363,5 +372,11 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
                     }
                 })
                 .show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUpdateHelper.unregisterListener(mInstallStateListener);
     }
 }
