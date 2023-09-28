@@ -5,12 +5,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -107,7 +110,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
             // Formatting creation time for display
             String creationTime = avocado.getCreationTime();
-            tvCreationTime.setText(getString(R.string.creation_time) + TimeUtils.getRelativeTimeText(creationTime));
+            tvCreationTime.setText(getString(R.string.creation_time) + " " + TimeUtils.getRelativeTimeText(creationTime));
 
             Object[] results = TimeUtils.getTimeRemaining(creationTime, readyIn, avocado.getSquishiness());
             String formattedTime = (String) results[0];
@@ -149,6 +152,16 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
             deleteButton.setVisibility(View.GONE);
         }
+
+        // Post a runnable to get width after the layout is complete
+        imgAvocado.post(new Runnable() {
+            @Override
+            public void run() {
+                int width = imgAvocado.getWidth();
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width, width);
+                imgAvocado.setLayoutParams(layoutParams);
+            }
+        });
         btnSave = findViewById(R.id.btnSave);
 
         // Initialize your database helper
@@ -175,7 +188,29 @@ public class AvocadoDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        setDoneActionToDismissKeyboardAndBlur(edtAvocadoName, this);
     }
+
+    public void setDoneActionToDismissKeyboardAndBlur(EditText editText, Context context) {
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+                    // Dismiss keyboard
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+
+                    // Clear focus
+                    textView.clearFocus();
+
+                    return true;  // Consumes the action
+                }
+                return false;  // Let other possible actions proceed
+            }
+        });
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
