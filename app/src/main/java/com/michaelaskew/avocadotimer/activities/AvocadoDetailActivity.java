@@ -2,8 +2,11 @@ package com.michaelaskew.avocadotimer.activities;
 
 import android.Manifest;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -18,7 +21,10 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -63,6 +69,25 @@ public class AvocadoDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avocado_detail);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("Detail");  // Set your desired title here
+
+            // Optionally, if you want to add a custom icon to the action bar
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_back);  // Provide your custom drawable resource here
+        }
+        // Set the status bar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+
+            // Ensure status bar icons are visible on light backgrounds
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
 
         avocadoDetailLayout = findViewById(R.id.avocadoDetailLayout);
         imgAvocado = findViewById(R.id.imgAvocado);
@@ -151,6 +176,24 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // Respond to the action bar's Up/Home button
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
 
     private void saveAvocado() {
         DatabaseHelper db = new DatabaseHelper(AvocadoDetailActivity.this);
