@@ -15,6 +15,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -61,6 +62,8 @@ public class CameraActivity extends AppCompatActivity {
     private ImageCapture imageCapture;
     private TextView caputredImageFeedback;
 
+    private TextView mlFeedback;
+
     private Uri capturedImageUri;
 
     private RelativeLayout sliderFeedback;
@@ -73,6 +76,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
+        mlFeedback = findViewById(R.id.mlFeedback);
         cameraPreviewView = findViewById(R.id.cameraPreviewView);
         preCaptureFeedback = findViewById(R.id.preCaptureFeedback);
         postCaptureFeedback = findViewById(R.id.postCaptureFeedback);
@@ -82,6 +86,16 @@ public class CameraActivity extends AppCompatActivity {
 
         sliderFeedback = findViewById(R.id.sliderFeedback);
         softnessSlider = findViewById(R.id.softnessSlider);
+
+        ImageButton closeButton = findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CameraActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
 
         initClassifier();
         initCamera();
@@ -129,7 +143,7 @@ public class CameraActivity extends AppCompatActivity {
                         if (hasAvocado) {
                             toastMessage = "Looks good!";
                         }
-                        caputredImageFeedback.setText(toastMessage);
+                        mlFeedback.setText(toastMessage);
                     }
                 }
             },
@@ -165,7 +179,7 @@ public class CameraActivity extends AppCompatActivity {
 
                 // set up buttons
                 // @@TODO - better logic
-                Button captureButton = findViewById(R.id.captureButton);
+                View captureButton = findViewById(R.id.captureButton);
                 captureButton.setOnClickListener(v -> captureImage());
 
                 Button acceptImageButton = findViewById(R.id.acceptImageButton);
@@ -173,6 +187,8 @@ public class CameraActivity extends AppCompatActivity {
                     preCaptureFeedback.setVisibility(View.GONE);
                     postCaptureFeedback.setVisibility(View.GONE);
                     sliderFeedback.setVisibility(View.VISIBLE);
+                    String mlMessage = "Now give it a squeeze and use the slider to indicate firmness.";
+                    mlFeedback.setText(mlMessage);
                 });
 
                 Button rejectImageButton = findViewById(R.id.rejectImageButton);
@@ -181,6 +197,7 @@ public class CameraActivity extends AppCompatActivity {
                     // You can go back to the pre-capture state or allow the user to capture another image
                     preCaptureFeedback.setVisibility(View.VISIBLE);
                     postCaptureFeedback.setVisibility(View.GONE);
+
                 });
 
                 Button confirmSoftnessButton = findViewById(R.id.confirmSoftnessButton);
