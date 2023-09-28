@@ -33,6 +33,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.tensorflow.lite.support.label.Category;
 import org.tensorflow.lite.task.vision.classifier.Classifications;
 
@@ -325,7 +326,7 @@ public class CameraActivity extends AppCompatActivity {
 
     // Capture Image
     private void captureImage() {
-        ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(new File(getExternalFilesDir(null), "capturedImage.jpg")).build();
+        ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(new File(getExternalFilesDir(null), "avo_" + RandomStringUtils.randomAlphanumeric(64) + ".jpg")).build();
 
         imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this), new ImageCapture.OnImageSavedCallback() {
             @Override

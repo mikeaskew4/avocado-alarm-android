@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -106,47 +107,13 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 
         // TODO: Set up RecyclerView with an adapter
         rvAvocadoList = findViewById(R.id.rvAvocadoList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        int numberOfColumns = 2;
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns);
         rvAvocadoList.setLayoutManager(layoutManager);
 
         loadAvocados();
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-
-                if (position != RecyclerView.NO_POSITION && position < avocadoList.size()) {
-
-                    Avocado avocadoToDelete = avocadoList.get(position);
-
-                    DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this);
-                    if (dbHelper.deleteAvocado(avocadoToDelete.getId())) {
-                        avocadoList.remove(position);
-
-                        // Check if the list is empty after removing the item
-                        if (avocadoList.isEmpty()) {
-                            rvAvocadoList.getAdapter().notifyDataSetChanged();
-                        } else {
-                            rvAvocadoList.getAdapter().notifyItemRemoved(position);
-                        }
-
-                        Toast.makeText(MainActivity.this, "Avocado deleted!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Error deleting Avocado.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        };
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(rvAvocadoList);
     }
 
     private void loadAvocados() {

@@ -64,6 +64,12 @@
                 android:id="@+id/btnSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/CustomButtonStyle"
+                android:background="@drawable/custom_button"
+                android:elevation="4dp"
+                android:paddingHorizontal="60dp"
+                android:paddingVertical="16dp"
+                android:stateListAnimator="@animator/custom_button_animator"
                 android:text="Save" />
 
             <Button
