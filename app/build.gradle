@@ -14,8 +14,8 @@ android {
         applicationId "com.michaelaskew.avocadotimer"
         minSdk 23
         targetSdkVersion 33
-        versionCode 5
-        versionName "1.12"
+        versionCode 6
+        versionName "1.13"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
