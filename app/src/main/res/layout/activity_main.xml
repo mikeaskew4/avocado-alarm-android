@@ -14,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/custom_button"
-        android:elevation="4dp"
         android:stateListAnimator="@animator/custom_button_animator"
         android:text="New Avocado Alarm"
         android:paddingVertical="16dp"
