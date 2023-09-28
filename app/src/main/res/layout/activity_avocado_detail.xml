@@ -1,108 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:paddingHorizontal="12dp"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/avocadoDetailLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="vertical"
-        android:spacing="10dp">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:layout_marginTop="16dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp">
 
-        <Space
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imgAvocado"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/sora_semibold"
+                android:gravity="center_horizontal"
+                android:text="Detail"
+                android:textColor="#2f2d2c"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
 
-            android:contentDescription="@string/avocado_image"
-            android:scaleType="centerCrop" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="50dp" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="20dp"
+        android:scrollbars="none"
+        android:paddingVertical="16dp">
 
         <LinearLayout
+            android:id="@+id/avocadoDetailLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:spacing="10dp">
 
-            <EditText
-                android:id="@+id/edtAvocadoName"
-                android:layout_width="300dp"
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:padding="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp">
+                <ImageView
+                    android:id="@+id/imgAvocado"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToOutline="true"
+                    android:outlineProvider="background"
+                    android:contentDescription="@string/avocado_image"
+                    android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edtAvocadoName"
+                    android:background="@drawable/edit_text_underline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sora_semibold"
+                    android:textStyle="normal"
+                    android:textSize="20sp"
+                    android:textColor="#2f2d2c"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:paddingRight="32dp"
+                    android:hint="@string/enter_avocado_name" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="-24dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/edit_pencil"
+                    android:contentDescription="Pencil Icon"/>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="20dp"
+                android:background="#eaeaea">
+            </View>
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/sora_semibold"
+                android:textStyle="normal"
+                android:textSize="16sp"
+                android:textColor="#2f2d2c"
+                android:text="History"/>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+            <TextView
+                android:id="@+id/tvCreationTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/sora"
+                android:textStyle="normal"
+                android:textSize="14sp"
+                android:textColor="#9b9b9b"
+                android:lineSpacingExtra="9sp" />
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/sora"
+                android:textStyle="normal"
+                android:textSize="14sp"
+                android:textColor="#9b9b9b"
+                android:lineSpacingExtra="9sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/sora_semibold"
+                android:textStyle="normal"
+                android:textSize="16sp"
+                android:textColor="#2f2d2c"
+                android:text="Size"/>
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:hint="@string/enter_avocado_name" />
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="-24dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_pencil"
-                android:contentDescription="Pencil Icon"/>
+                android:layout_marginTop="8dp">
+                <RadioButton
+                    android:id="@+id/radioS"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:text="S"
+                    android:background="@drawable/btn_radio"
+                    android:button="@null"/>
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"></Space>
+                <RadioButton
+                    android:id="@+id/radioM"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:text="M"
+                    android:background="@drawable/btn_radio"
+                    android:checked="true"
+                    android:button="@null"/>
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"></Space>
+                <RadioButton
+                    android:id="@+id/radioL"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:layout_weight="1"
+                    android:text="L"
+                    android:background="@drawable/btn_radio"
+                    android:button="@null"/>
+            </RadioGroup>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CustomButtonStyle"
+                    android:background="@drawable/custom_button"
+                    android:elevation="4dp"
+                    android:paddingHorizontal="60dp"
+                    android:paddingVertical="16dp"
+                    android:stateListAnimator="@animator/custom_button_animator"
+                    android:text="Save" />
+
+                <Button
+                    android:id="@+id/deleteButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/white"
+                    android:elevation="0dp"
+                    android:shadowRadius="0"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:text="Delete Avocado"
+                    android:textColor="@android:color/holo_red_light" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+
 
         </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/CustomButtonStyle"
-                android:background="@drawable/custom_button"
-                android:elevation="4dp"
-                android:paddingHorizontal="60dp"
-                android:paddingVertical="16dp"
-                android:stateListAnimator="@animator/custom_button_animator"
-                android:text="Save" />
-
-            <Button
-                android:id="@+id/deleteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/white"
-                android:elevation="0dp"
-                android:shadowRadius="0"
-                style="?android:attr/borderlessButtonStyle"
-                android:text="Delete Avocado"
-                android:textColor="@android:color/holo_red_light" />
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="50dp" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="50dp" />
-
-        <TextView
-            android:id="@+id/tvCreationTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center" />
-
-        <TextView
-            android:id="@+id/tvTimer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center" />
-
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</LinearLayout>

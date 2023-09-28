@@ -2,12 +2,18 @@ package com.michaelaskew.avocadotimer.activities;
 
 import android.Manifest;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -18,7 +24,10 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -64,6 +73,25 @@ public class AvocadoDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avocado_detail);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("Detail");  // Set your desired title here
+
+            // Optionally, if you want to add a custom icon to the action bar
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_back);  // Provide your custom drawable resource here
+        }
+        // Set the status bar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+
+            // Ensure status bar icons are visible on light backgrounds
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
         avocadoDetailLayout = findViewById(R.id.avocadoDetailLayout);
         imgAvocado = findViewById(R.id.imgAvocado);
         edtAvocadoName = findViewById(R.id.edtAvocadoName);
@@ -82,7 +110,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
             // Formatting creation time for display
             String creationTime = avocado.getCreationTime();
-            tvCreationTime.setText(getString(R.string.creation_time) + TimeUtils.getRelativeTimeText(creationTime));
+            tvCreationTime.setText(getString(R.string.creation_time) + " " + TimeUtils.getRelativeTimeText(creationTime));
 
             Object[] results = TimeUtils.getTimeRemaining(creationTime, readyIn, avocado.getSquishiness());
             String formattedTime = (String) results[0];
@@ -124,6 +152,16 @@ public class AvocadoDetailActivity extends AppCompatActivity {
 
             deleteButton.setVisibility(View.GONE);
         }
+
+        // Post a runnable to get width after the layout is complete
+        imgAvocado.post(new Runnable() {
+            @Override
+            public void run() {
+                int width = imgAvocado.getWidth();
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width, width);
+                imgAvocado.setLayoutParams(layoutParams);
+            }
+        });
         btnSave = findViewById(R.id.btnSave);
 
         // Initialize your database helper
@@ -150,7 +188,47 @@ public class AvocadoDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        setDoneActionToDismissKeyboardAndBlur(edtAvocadoName, this);
     }
+
+    public void setDoneActionToDismissKeyboardAndBlur(EditText editText, Context context) {
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+                    // Dismiss keyboard
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+
+                    // Clear focus
+                    textView.clearFocus();
+
+                    return true;  // Consumes the action
+                }
+                return false;  // Let other possible actions proceed
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // Respond to the action bar's Up/Home button
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
 
     private void saveAvocado() {
         DatabaseHelper db = new DatabaseHelper(AvocadoDetailActivity.this);
