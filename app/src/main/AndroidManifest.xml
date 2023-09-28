@@ -14,6 +14,7 @@
         tools:targetApi="31">
         <activity
             android:name=".activities.LauncherActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +26,7 @@
         </activity>
         <activity
             android:name=".activities.OnboardingScreen"
+            android:screenOrientation="portrait"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -37,6 +39,7 @@
         <!-- </activity> -->
         <activity
             android:name=".activities.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
@@ -45,8 +48,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.CameraActivity" />
-        <activity android:name=".activities.AvocadoDetailActivity" />
+        <activity
+            android:name=".activities.CameraActivity"
+            android:screenOrientation="portrait"
+
+            />
+        <activity
+            android:name=".activities.AvocadoDetailActivity"
+            android:screenOrientation="portrait"
+
+        />
 
         <provider
             android:name="androidx.core.content.FileProvider"

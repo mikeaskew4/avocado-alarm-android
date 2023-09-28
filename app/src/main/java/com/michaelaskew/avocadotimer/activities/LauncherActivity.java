@@ -33,8 +33,8 @@ public class LauncherActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
 
         // @@TODO - use actual version
-//        editor.putInt("last_version_code", currentVersionCode);
-        editor.putInt("last_version_code", 0);
+        editor.putInt("last_version_code", currentVersionCode);
+//        editor.putInt("last_version_code", 0);
         editor.apply();
     }
 }
