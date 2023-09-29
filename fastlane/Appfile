@@ -1,0 +1,2 @@
+json_key_file("/Users/mikeaskew/Documents/AA/avocado-alarm-807db0e4084e.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("com.michaelaskew.avocadotimer") # e.g. com.krausefx.app
