@@ -32,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.*;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -66,7 +67,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private Uri capturedImageUri;
 
-    private RelativeLayout sliderFeedback;
+    private ConstraintLayout sliderFeedback;
     private SeekBar softnessSlider;
 
     private ImageClassifierHelper imageClassifierHelper;
@@ -179,25 +180,31 @@ public class CameraActivity extends AppCompatActivity {
 
                 // set up buttons
                 // @@TODO - better logic
+
                 View captureButton = findViewById(R.id.captureButton);
+
+                final String[] mlMessage = {
+                        "Let's give it another shot...",
+                        "Now give it a squeeze and use the slider to indicate firmness.",
+                };
+
                 captureButton.setOnClickListener(v -> captureImage());
 
-                Button acceptImageButton = findViewById(R.id.acceptImageButton);
+                View acceptImageButton = findViewById(R.id.acceptImageButton);
                 acceptImageButton.setOnClickListener(v -> {
                     preCaptureFeedback.setVisibility(View.GONE);
                     postCaptureFeedback.setVisibility(View.GONE);
                     sliderFeedback.setVisibility(View.VISIBLE);
-                    String mlMessage = "Now give it a squeeze and use the slider to indicate firmness.";
-                    mlFeedback.setText(mlMessage);
+                    mlFeedback.setText(mlMessage[1]);
                 });
 
-                Button rejectImageButton = findViewById(R.id.rejectImageButton);
+                View rejectImageButton = findViewById(R.id.rejectImageButton);
                 rejectImageButton.setOnClickListener(v -> {
                     // Handle the image rejection
                     // You can go back to the pre-capture state or allow the user to capture another image
                     preCaptureFeedback.setVisibility(View.VISIBLE);
                     postCaptureFeedback.setVisibility(View.GONE);
-
+                    mlFeedback.setText(mlMessage[0]);
                 });
 
                 Button confirmSoftnessButton = findViewById(R.id.confirmSoftnessButton);

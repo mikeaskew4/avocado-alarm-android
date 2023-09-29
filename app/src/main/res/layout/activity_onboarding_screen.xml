@@ -30,7 +30,7 @@
             android:gravity="center_horizontal"
             android:letterSpacing="0.01"
             android:lineSpacingExtra="0sp"
-            android:textColor="#315624"
+            android:textColor="@color/colorTextPrimary"
             android:textSize="34sp"
             android:lineHeight="40sp"
             android:textStyle="bold"
@@ -46,7 +46,7 @@
             android:lineHeight="24sp"
             android:lineSpacingExtra="7.6sp"
             android:paddingHorizontal="40dp"
-            android:textColor="#315624"
+            android:textColor="@color/colorTextPrimary"
             android:textSize="20sp"
             android:textStyle="normal"
             android:text="The best avocados are eaten right on time" />

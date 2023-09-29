@@ -10,7 +10,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
+        android:background="@null"
+
         android:layout_marginTop="16dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp">
@@ -27,7 +28,7 @@
                 android:fontFamily="@font/sora_semibold"
                 android:gravity="center_horizontal"
                 android:text="Detail"
-                android:textColor="#2f2d2c"
+                android:textColor="@color/colorTextBody"
                 android:textSize="18sp"
                 android:textStyle="normal" />
         </RelativeLayout>
@@ -82,7 +83,7 @@
                     android:fontFamily="@font/sora_semibold"
                     android:textStyle="normal"
                     android:textSize="20sp"
-                    android:textColor="#2f2d2c"
+                    android:textColor="@color/colorTextBody"
                     android:inputType="text"
                     android:imeOptions="actionDone"
                     android:paddingRight="32dp"
@@ -108,7 +109,7 @@
                 android:fontFamily="@font/sora_semibold"
                 android:textStyle="normal"
                 android:textSize="16sp"
-                android:textColor="#2f2d2c"
+                android:textColor="@color/colorTextBody"
                 android:text="History"/>
             <Space
                 android:layout_width="match_parent"
@@ -120,7 +121,7 @@
                 android:fontFamily="@font/sora"
                 android:textStyle="normal"
                 android:textSize="14sp"
-                android:textColor="#9b9b9b"
+                android:textColor="@color/colorTextBodyLight"
                 android:lineSpacingExtra="9sp" />
 
             <TextView
@@ -130,7 +131,7 @@
                 android:fontFamily="@font/sora"
                 android:textStyle="normal"
                 android:textSize="14sp"
-                android:textColor="#9b9b9b"
+                android:textColor="@color/colorTextBodyLight"
                 android:lineSpacingExtra="9sp" />
 
             <TextView
@@ -139,7 +140,7 @@
                 android:fontFamily="@font/sora_semibold"
                 android:textStyle="normal"
                 android:textSize="16sp"
-                android:textColor="#2f2d2c"
+                android:textColor="@color/colorTextBody"
                 android:text="Size"/>
 
             <RadioGroup

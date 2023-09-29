@@ -5,120 +5,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <androidx.camera.view.PreviewView
-        android:id="@+id/cameraPreviewView"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
 
-        android:orientation="horizontal">
-        <FrameLayout
-            android:layout_width="80dp"
-            android:layout_height="80dp">
-
-            <ImageButton
-                android:id="@+id/closeButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="?android:selectableItemBackground"
-                android:src="@drawable/close_circle"
-                android:padding="20dp"
-                android:layout_gravity="center"
-                android:scaleType="centerInside"
-                android:contentDescription="Close" />
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/mlFeedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Hold the avocado up to the camera and get ready to snap..."
-                android:layout_marginTop="20dp"
-                android:textColor="#FFFFFF"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="8dp"
-                android:orientation="horizontal"
-                android:background="@drawable/camera_message"/>
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="80dp"
-            android:layout_height="80dp">
-            <ImageButton
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="?android:selectableItemBackground"
-                android:src="@drawable/camera_settings"
-                android:padding="20dp"
-                android:layout_gravity="center"
-                android:scaleType="centerInside"
-                android:contentDescription="Close" />
-        </FrameLayout>
-    </LinearLayout>
-    <!-- Overlay for pre-capture feedback -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/preCaptureFeedback"
+        <androidx.camera.view.PreviewView
+            android:id="@+id/cameraPreviewView"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1">
+            android:layout_height="match_parent" />
 
-<!--            <Button-->
-<!--                android:id="@+id/captureButton"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Capture" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Get ready to capture!"-->
-<!--                android:textColor="#FFFFFF" />-->
-            <View
-                android:id="@+id/captureButton"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/camera_shutter_button">
-            </View>
-
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <!-- Overlay for post-capture feedback -->
-    <FrameLayout
-        android:id="@+id/postCaptureFeedback"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
+        <!-- Overlay for pre-capture feedback -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/preCaptureFeedbackInner"
+                android:id="@+id/preCaptureFeedback"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:gravity="center"
@@ -129,15 +34,83 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.975">
+                app:layout_constraintVertical_bias="1">
 
-                <!-- Buttons to approve or retake can be added here -->
+    <!--            <Button-->
+    <!--                android:id="@+id/captureButton"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="Capture" />-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="Get ready to capture!"-->
+    <!--                android:textColor="#FFFFFF" />-->
+                <View
+                    android:id="@+id/captureButton"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/camera_shutter_button">
+                </View>
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Overlay for post-capture feedback -->
+        <FrameLayout
+            android:id="@+id/postCaptureFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+        >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
                 <LinearLayout
+                    android:id="@+id/preCaptureFeedbackInner"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="150dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.975">
 
+                    <!-- Buttons to approve or retake can be added here -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/rejectImageButton"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:text="Retry"
+                            android:layout_margin="32dp"
+                            android:background="@drawable/retry" />
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+                        <View
+                            android:id="@+id/acceptImageButton"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_margin="32dp"
+                            android:background="@drawable/accept" />
+
+
+
+                    </LinearLayout>
                     <TextView
                         android:id="@+id/capturedImageFeedback"
                         android:layout_width="300dp"
@@ -146,88 +119,164 @@
                         style="?android:attr/borderlessButtonStyle"
                         android:textColor="#FFFFFF"
                         android:textSize="12dp"
-                        android:textAllCaps="false"/>
-
-                    <Button
-                        android:id="@+id/acceptImageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Accept" />
-
-                    <Button
-                        android:id="@+id/rejectImageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Retry"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:textColor="#FFFFFF" />
-
+                        android:textAllCaps="false"
+                        android:visibility="invisible"/>
                 </LinearLayout>
-
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-        <ImageView
-            android:id="@+id/capturedImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"/>
-    </FrameLayout>
-    <RelativeLayout
-        android:id="@+id/sliderFeedback"
-        android:visibility="gone"
-
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/capturedImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"/>
+        </FrameLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/sliderFeedback"
+            android:visibility="gone"
+            android:background="#66000000">
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="#66000000"
-                android:gravity="center"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
                 android:orientation="vertical"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginLeft="140dp"
+                android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1">
-                <SeekBar
-                    android:id="@+id/softnessSlider"
+            >
+                <!-- Start Label -->
+                <TextView
+                    android:id="@+id/startLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginVertical="16dp"
-                    android:layout_marginHorizontal="30dp"
+                    android:text="Firm"
+                    android:gravity="right"
+                    android:textColor="@color/white"
+                    android:padding="8dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true" />
+                <!-- SeekBar -->
+                <SeekBar
+                    android:id="@+id/softnessSlider"
+                    android:layout_width="200dp"
+                    android:layout_height="400dp"
+                    android:layout_toStartOf="@id/endLabel"
+                    android:layout_toEndOf="@id/startLabel"
+                    android:layout_centerVertical="true"
+                    android:rotation="90"
                     android:max="6"
                     android:min="1"
-                    android:progress="1" />
-
+                    android:progress="1"
+                    android:padding="16dp"
+                    />
+                <!-- End Label -->
                 <TextView
-                    android:id="@+id/softnessLabel"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/endLabel"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/softnessSlider"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="#FFFFFF"
-                    android:text="Firm ... Squishy" />
+                    android:gravity="right"
+                    android:text="Squishy"
+                    android:padding="8dp"
+                    android:textColor="@color/white"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
 
-                <Button
-                    android:id="@+id/confirmSoftnessButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Confirm"
-                    android:layout_below="@+id/softnessLabel"
-                    android:layout_centerHorizontal="true" />
+
             </LinearLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1">
+
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/softnessLabel"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_above="@+id/softnessSlider"-->
+    <!--                    android:layout_centerHorizontal="true"-->
+    <!--                    android:textColor="#FFFFFF"-->
+    <!--                    android:text="Firm ... Squishy" />-->
+
+                    <Button
+                        android:id="@+id/confirmSoftnessButton"
+                        android:layout_below="@+id/softnessLabel"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/CustomButtonStyle"
+                        android:background="@drawable/custom_button"
+                        android:elevation="4dp"
+                        android:paddingHorizontal="60dp"
+                        android:paddingVertical="16dp"
+                        android:stateListAnimator="@animator/custom_button_animator"
+                        android:text="Next" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </RelativeLayout>
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:orientation="horizontal">
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+                <ImageButton
+                    android:id="@+id/closeButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/close_circle"
+                    android:padding="0dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:contentDescription="Close" />
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/mlFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hold the avocado up to the camera and get ready to snap..."
+                    android:layout_marginTop="20dp"
+                    android:textColor="#FFFFFF"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/camera_message"/>
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+                <ImageButton
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/camera_settings"
+                    android:padding="0dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:contentDescription="Close" />
+            </FrameLayout>
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
