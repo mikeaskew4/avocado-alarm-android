@@ -30,17 +30,25 @@ public class CircleChartView extends View {
 
         Log.d("CircleChartView", "Avocado fraction " + fractionElapsed);
         if (fractionElapsed > 0.25) {
-            paint.setColor(Color.YELLOW);
+
+            paint.setColor(Color.rgb(154,205,50)); // Avocado green ripe
         } else if (fractionElapsed < -0.25) {
             paint.setColor(Color.rgb(139,69,19)); // Brown color
         } else {
-            paint.setColor(Color.rgb(154,205,50)); // Avocado green color
+            paint.setColor(Color.rgb(238, 225, 151)); // Cream yellow perfect color
         }
 
         canvas.drawCircle(width / 2, height / 2, radius, paint);
-
-        paint.setColor(Color.WHITE);
-        canvas.drawCircle(width / 3 + width / 6, height / 3 + height / 6, radius / 2, paint);
+//
+////        paint.setColor(Color.WHITE);
+//        if (fractionElapsed > 0.25) {
+//            paint.setColor(Color.rgb(238, 225, 151)); // Cream yellow perfect color
+//        } else if (fractionElapsed < -0.25) {
+//            paint.setColor(Color.rgb(139,69,19)); // Brown color
+//        } else {
+//            paint.setColor(Color.rgb(139,69,19)); // Brown color
+//        }
+//        canvas.drawCircle(width / 3 + width / 6, height / 3 + height / 6, radius / 2, paint);
 
     }
 
