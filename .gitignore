@@ -16,3 +16,6 @@ local.properties
 *.tflite
 app/release/
 app/debug/
+.env
+fastlane/.env.secret
+!.env.example
