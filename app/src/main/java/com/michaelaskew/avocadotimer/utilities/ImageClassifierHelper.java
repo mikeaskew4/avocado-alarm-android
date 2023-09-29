@@ -140,7 +140,7 @@ public class ImageClassifierHelper {
         String modelName;
         switch (currentModel) {
             case MODEL_MOBILENETV1:
-                modelName = "mobilenet_fids30_quantized_v9.tflite";
+                modelName = "mobilenet_fids30_v2.tflite";
                 break;
             case MODEL_EFFICIENTNETV0:
                 modelName = "efficientnet-lite0.tflite";
@@ -152,11 +152,9 @@ public class ImageClassifierHelper {
                 modelName = "efficientnet-lite2.tflite";
                 break;
             default:
-                modelName = "mobilenet_fids30_quantized_v9.tflite";
+                modelName = "mobilenet_fids30_v2.tflite";
         }
         try {
-
-
             imageClassifier =
                     ImageClassifier.createFromFileAndOptions(
                             context,
@@ -190,9 +188,6 @@ public class ImageClassifierHelper {
         // Preprocess the image and convert it into a TensorImage for classification.
         TensorImage tensorImage =
                 imageProcessor.process(TensorImage.fromBitmap(image));
-
-        // Classify the input image
-        imageClassifier.classify(tensorImage);
 
         List<Classifications> result = imageClassifier.classify(tensorImage);
 
