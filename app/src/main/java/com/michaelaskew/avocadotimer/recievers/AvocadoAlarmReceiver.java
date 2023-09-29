@@ -1,6 +1,5 @@
 package com.michaelaskew.avocadotimer.recievers;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,7 +10,6 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.michaelaskew.avocadotimer.R;
 import com.michaelaskew.avocadotimer.activities.MainActivity;
@@ -57,7 +55,7 @@ public class AvocadoAlarmReceiver extends BroadcastReceiver {
         );
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.at_logo_smalllogo)
+                .setSmallIcon(R.drawable.at_logo_v2_small_rev)
                 .setContentTitle("Your Avocado " + avocadoName + " is ready!")
                 .setContentText("Open up Avocado Timer to learn more")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
