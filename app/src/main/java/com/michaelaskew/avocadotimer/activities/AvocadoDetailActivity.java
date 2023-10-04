@@ -1,9 +1,11 @@
 package com.michaelaskew.avocadotimer.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -25,6 +27,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -86,7 +89,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
         }
         // Set the status bar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorBackgroundSecondary));
 
             // Ensure status bar icons are visible on light backgrounds
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -99,7 +102,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
         tvTimer = findViewById(R.id.tvTimer);
 
         deleteButton = findViewById(R.id.deleteButton);
-
+        String fakeFirstName = null;
         selectedAvocadoId = getIntent().getIntExtra("avocado_id", -1);
         if (selectedAvocadoId > 0) {
             DatabaseHelper db = new DatabaseHelper(this);
@@ -129,9 +132,9 @@ public class AvocadoDetailActivity extends AppCompatActivity {
             String imageUriString = getIntent().getStringExtra("capturedImageUri");
             int capturedSquishinessValue = getIntent().getIntExtra("capturedSquishinessValue", 0);
             Uri capturedImageUri = Uri.parse(imageUriString);
-            String firstName = faker.name().firstName();
+            fakeFirstName = faker.name().firstName();
 
-            edtAvocadoName.setText(firstName);
+            edtAvocadoName.setText(fakeFirstName);
 
             imgAvocado.setImageURI(capturedImageUri);
 //            tvCreationTime.setText(LocalDateTime.now().toString());
@@ -145,11 +148,7 @@ public class AvocadoDetailActivity extends AppCompatActivity {
                     avocado.setCreationTime(LocalDateTime.now().toString());
                 }
                 avocado.setSquishiness(capturedSquishinessValue);
-                // TODO: Load image into imgAvocado using Glide or Picasso
-
-                // TODO: Calculate and display time remaining until avocado is ready
             }
-
             deleteButton.setVisibility(View.GONE);
         }
 
@@ -162,9 +161,21 @@ public class AvocadoDetailActivity extends AppCompatActivity {
                 imgAvocado.setLayoutParams(layoutParams);
             }
         });
+
+        if (selectedAvocadoId <= 0) {
+            // Delay showing the AlertDialog by 3 seconds (3000 milliseconds)
+            String finalFakeFirstName = fakeFirstName;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showAlertDialog(finalFakeFirstName);
+                }
+            }, 1000);
+        }
+
         btnSave = findViewById(R.id.btnSave);
 
-        // Initialize your database helper
+        // Initialize database helper
         db = new DatabaseHelper(this);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +201,22 @@ public class AvocadoDetailActivity extends AppCompatActivity {
         });
 
         setDoneActionToDismissKeyboardAndBlur(edtAvocadoName, this);
+
+    }
+
+    private void showAlertDialog(String fakeFirstName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Congrats!")
+                .setMessage("Your avocado kinda looks like a `" + fakeFirstName + "`, but you can change this name if you like. ")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void setDoneActionToDismissKeyboardAndBlur(EditText editText, Context context) {

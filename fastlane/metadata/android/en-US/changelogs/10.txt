@@ -1,1 +1,0 @@
-add logo to button and update alert logo
