@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements ImageCaptureManag
 
         if (hasOldAvocados) {
             mainHeadline.setText("Looks Like Your Avocado List Needs Some Grooming");
-            subhead.setText("Swipe on the list to remove an avocado you (obviosuly already ate");
+            subhead.setText("Press on an avocado (you obviosuly already ate) and delete it");
 
         }
 
